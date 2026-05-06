@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智能规划</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>tailwind.config = { theme: { extend: { colors: { brand: '#10B981', accent: '#F59E0B' } } } }</script>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif; }
+        .screen { height: 100vh; overflow-y: auto; }
+        .screen::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="bg-slate-50">
+    <div class="screen">
+        <div class="bg-white px-6 pt-3 pb-2 flex justify-between items-center text-xs">
+            <span class="font-medium">9:41</span>
+            <div class="flex gap-1"><i class="fas fa-signal"></i><i class="fas fa-wifi"></i><i class="fas fa-battery-full"></i></div>
+        </div>
+        <div class="bg-white px-4 py-3 flex items-center justify-between border-b border-gray-100">
+            <a href="home.html" class="text-gray-600"><i class="fas fa-chevron-left text-lg"></i></a>
+            <h1 class="font-semibold text-gray-900">智能规划</h1>
+            <a href="preference.html" class="text-emerald-600"><i class="fas fa-cog"></i></a>
+        </div>
+        
+        <div class="px-4 py-4 pb-24 space-y-4">
+            <p class="text-gray-500 text-sm">基于您的偏好，AI将自动生成均衡的一周菜单</p>
+            
+            <!-- 规划周期选择 -->
+            <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-calendar-alt text-emerald-600"></i>
+                    </div>
+                    <p class="font-semibold text-gray-900">规划周期</p>
+                </div>
+                <div class="grid grid-cols-3 gap-2">
+                    <button onclick="selectPeriod(this, 7)" class="period-btn py-3 bg-emerald-50 text-emerald-700 rounded-xl text-sm border-2 border-emerald-500 font-medium transition-all">
+                        <i class="fas fa-calendar-week mr-1"></i>一周
+                    </button>
+                    <button onclick="selectPeriod(this, 14)" class="period-btn py-3 bg-gray-50 text-gray-600 rounded-xl text-sm border-2 border-transparent transition-all">
+                        <i class="fas fa-calendar mr-1"></i>半个月
+                    </button>
+                    <button onclick="selectPeriod(this, 30)" class="period-btn py-3 bg-gray-50 text-gray-600 rounded-xl text-sm border-2 border-transparent transition-all">
+                        <i class="fas fa-calendar-plus mr-1"></i>一个月
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 当前偏好摘要 -->
+            <div class="bg-gradient-to-r from-emerald-500 to-teal-500 rounded-2xl p-5 text-white">
+                <div class="flex justify-between items-start mb-3">
+                    <p class="text-emerald-100 text-xs">当前偏好摘要</p>
+                    <a href="preference.html" class="text-xs text-emerald-100 flex items-center">
+                        修改 <i class="fas fa-chevron-right ml-1"></i>
+                    </a>
+                </div>
+                <div class="grid grid-cols-2 gap-3 text-sm">
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-utensils"></i>
+                        <span>2荤1素1主食/天</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span>🐔🐟🐄</span>
+                        <span>鸡鱼肉优先</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-pepper-hot"></i>
+                        <span>川菜、粤菜</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-ban"></i>
+                        <span>忌香菜、茼蒿</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 生成选项 -->
+            <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+                <h3 class="font-semibold text-gray-900 mb-4">生成选项</h3>
+                
+                <label class="flex items-center justify-between py-3 border-b border-gray-100">
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-random text-gray-400"></i>
+                        <div>
+                            <span class="text-gray-900">不重复菜品</span>
+                            <p class="text-xs text-gray-400">每天菜品不重样</p>
+                        </div>
+                    </div>
+                    <div class="relative">
+                        <input type="checkbox" checked class="sr-only peer" id="noRepeat">
+                        <div onclick="toggleSwitch('noRepeat')" class="w-11 h-6 bg-gray-200 rounded-full peer-checked:bg-emerald-500 after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-5 cursor-pointer"></div>
+                    </div>
+                </label>
+                
+                <label class="flex items-center justify-between py-3 border-b border-gray-100">
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-coins text-gray-400"></i>
+                        <div>
+                            <span class="text-gray-900">控制预算</span>
+                            <p class="text-xs text-gray-400">不超过设定的周预算</p>
+                        </div>
+                    </div>
+                    <div class="relative">
+                        <input type="checkbox" checked class="sr-only peer" id="budgetCtrl">
+                        <div onclick="toggleSwitch('budgetCtrl')" class="w-11 h-6 bg-gray-200 rounded-full peer-checked:bg-emerald-500 after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-5 cursor-pointer"></div>
+                    </div>
+                </label>
+                
+                <label class="flex items-center justify-between py-3 border-b border-gray-100">
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-balance-scale text-gray-400"></i>
+                        <div>
+                            <span class="text-gray-900">营养均衡</span>
+                            <p class="text-xs text-gray-400">荤素搭配合理</p>
+                        </div>
+                    </div>
+                    <div class="relative">
+                        <input type="checkbox" checked class="sr-only peer" id="nutrition">
+                        <div onclick="toggleSwitch('nutrition')" class="w-11 h-6 bg-gray-200 rounded-full peer-checked:bg-emerald-500 after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-5 cursor-pointer"></div>
+                    </div>
+                </label>
+                
+                <label class="flex items-center justify-between py-3">
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-robot text-gray-400"></i>
+                        <div>
+                            <span class="text-gray-900">AI自动拆解食材</span>
+                            <p class="text-xs text-gray-400">生成采购清单</p>
+                        </div>
+                    </div>
+                    <div class="relative">
+                        <input type="checkbox" checked class="sr-only peer" id="aiAnalysis">
+                        <div onclick="toggleSwitch('aiAnalysis')" class="w-11 h-6 bg-gray-200 rounded-full peer-checked:bg-emerald-500 after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-5 cursor-pointer"></div>
+                    </div>
+                </label>
+            </div>
+            
+            <!-- 预计结果 -->
+            <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+                <h3 class="font-semibold text-gray-900 mb-4">预计生成结果</h3>
+                <div class="grid grid-cols-3 gap-3 text-center">
+                    <div class="bg-emerald-50 rounded-xl p-3">
+                        <p class="text-2xl font-bold text-emerald-600" id="daysCount">7</p>
+                        <p class="text-xs text-gray-500">天菜单</p>
+                    </div>
+                    <div class="bg-amber-50 rounded-xl p-3">
+                        <p class="text-2xl font-bold text-amber-600" id="budgetEst">~500</p>
+                        <p class="text-xs text-gray-500">元预算</p>
+                    </div>
+                    <div class="bg-blue-50 rounded-xl p-3">
+                        <p class="text-2xl font-bold text-blue-600" id="dishesCount">49</p>
+                        <p class="text-xs text-gray-500">道菜品</p>
+                    </div>
+                </div>
+                <p class="text-xs text-gray-400 mt-3 text-center">
+                    <i class="fas fa-info-circle mr-1"></i>
+                    实际数据以生成为准，AI会自动优化搭配
+                </p>
+            </div>
+            
+            <!-- 周期说明 -->
+            <div class="bg-blue-50 rounded-xl p-4 border border-blue-100">
+                <div class="flex items-start gap-3">
+                    <i class="fas fa-lightbulb text-blue-500 mt-0.5"></i>
+                    <div class="text-sm">
+                        <p class="font-medium text-blue-700 mb-1">各周期特点</p>
+                        <p class="text-blue-600 text-xs">• <b>一周</b>：适合日常规划，快速上手</p>
+                        <p class="text-blue-600 text-xs">• <b>半个月</b>：适合季节性食材搭配</p>
+                        <p class="text-blue-600 text-xs">• <b>一个月</b>：全面规划，支持按周调整</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 底部按钮 -->
+        <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 p-4" style="max-width: 375px; margin: 0 auto;">
+            <a href="menu-preview.html" class="block w-full bg-emerald-500 text-white text-center py-4 rounded-2xl font-semibold active:scale-95 transition-transform shadow-lg shadow-emerald-500/30">
+                <i class="fas fa-magic mr-2"></i>开始智能生成
+            </a>
+        </div>
+    </div>
+    
+    <!-- Toast -->
+    <div id="toast" class="fixed bottom-24 left-1/2 -translate-x-1/2 bg-gray-800 text-white px-4 py-2 rounded-full text-sm hidden z-50">
+        <span id="toastText"></span>
+    </div>
+    
+    <script>
+        let selectedPeriod = 7;
+        
+        function selectPeriod(btn, days) {
+            document.querySelectorAll('.period-btn').forEach(b => {
+                b.classList.remove('bg-emerald-50', 'text-emerald-700', 'border-emerald-500');
+                b.classList.add('bg-gray-50', 'text-gray-600', 'border-transparent');
+            });
+            btn.classList.remove('bg-gray-50', 'text-gray-600', 'border-transparent');
+            btn.classList.add('bg-emerald-50', 'text-emerald-700', 'border-emerald-500');
+            
+            selectedPeriod = days;
+            updateEstimate();
+        }
+        
+        function updateEstimate() {
+            const perDayBudget = 70; // 每天70元预算
+            const perDayDishes = 4; // 每天4道菜
+            
+            document.getElementById('daysCount').textContent = selectedPeriod;
+            document.getElementById('budgetEst').textContent = '~' + (selectedPeriod * perDayBudget);
+            document.getElementById('dishesCount').textContent = selectedPeriod * perDayDishes;
+        }
+        
+        function toggleSwitch(id) {
+            const checkbox = document.getElementById(id);
+            checkbox.checked = !checkbox.checked;
+            const toggle = checkbox.nextElementSibling;
+            if (checkbox.checked) {
+                toggle.classList.add('bg-emerald-500');
+                toggle.classList.remove('bg-gray-200');
+                toggle.classList.add('after:translate-x-5');
+            } else {
+                toggle.classList.remove('bg-emerald-500');
+                toggle.classList.add('bg-gray-200');
+                toggle.classList.remove('after:translate-x-5');
+            }
+        }
+        
+        function showToast(text) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastText').textContent = text;
+            toast.classList.remove('hidden');
+            setTimeout(() => toast.classList.add('hidden'), 2000);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>采购清单</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>tailwind.config = { theme: { extend: { colors: { brand: '#10B981', accent: '#F59E0B' } } } }</script>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif; }
+        .screen { height: 100vh; overflow-y: auto; }
+        .screen::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="bg-slate-50">
+    <div class="screen">
+        <div class="bg-white px-6 pt-3 pb-2 flex justify-between items-center text-xs">
+            <span class="font-medium">9:41</span>
+            <div class="flex gap-1"><i class="fas fa-signal"></i><i class="fas fa-wifi"></i><i class="fas fa-battery-full"></i></div>
+        </div>
+        <div class="bg-white px-4 py-3 flex items-center justify-between border-b border-gray-100">
+            <a href="home.html" class="text-gray-600"><i class="fas fa-chevron-left text-lg"></i></a>
+            <h1 class="font-semibold text-gray-900">采购清单</h1>
+            <button onclick="showExportMenu()" class="text-emerald-600">
+                <i class="fas fa-ellipsis-v"></i>
+            </button>
+        </div>
+        
+        <!-- 视图切换 -->
+        <div class="bg-white px-4 py-3 border-b border-gray-100">
+            <div class="flex bg-gray-100 rounded-xl p-1">
+                <button id="weekTab" class="flex-1 py-2 bg-white text-emerald-600 rounded-lg text-sm font-medium shadow-sm transition-all" onclick="switchView('week')">
+                    每周汇总
+                </button>
+                <button id="dayTab" class="flex-1 py-2 text-gray-500 rounded-lg text-sm font-medium transition-all" onclick="switchView('day')">
+                    每日明细
+                </button>
+            </div>
+        </div>
+        
+        <!-- 每日选择 -->
+        <div id="daySelector" class="bg-white px-4 py-3 border-b border-gray-100 hidden">
+            <div class="flex gap-2 overflow-x-auto">
+                <button class="px-4 py-2 bg-emerald-50 text-emerald-700 rounded-full text-sm whitespace-nowrap border border-emerald-200">周一 6/2</button>
+                <button class="px-4 py-2 bg-gray-50 text-gray-600 rounded-full text-sm whitespace-nowrap">周二 6/3</button>
+                <button class="px-4 py-2 bg-gray-50 text-gray-600 rounded-full text-sm whitespace-nowrap">周三 6/4</button>
+                <button class="px-4 py-2 bg-gray-50 text-gray-600 rounded-full text-sm whitespace-nowrap">周四 6/5</button>
+                <button class="px-4 py-2 bg-gray-50 text-gray-600 rounded-full text-sm whitespace-nowrap">周五 6/6</button>
+            </div>
+        </div>
+        
+        <!-- 预算概览 -->
+        <div class="px-4 py-4 bg-white border-b border-gray-100">
+            <div class="flex justify-between items-center">
+                <div>
+                    <p class="text-sm text-gray-500">预算总额</p>
+                    <p class="text-2xl font-bold text-gray-900"><span id="totalBudget">981</span> <span class="text-sm font-normal">元</span></p>
+                </div>
+                <div class="text-right">
+                    <p class="text-sm text-gray-500">已购</p>
+                    <p class="text-2xl font-bold text-emerald-600"><span id="purchased">245</span> <span class="text-sm font-normal">元</span></p>
+                </div>
+            </div>
+            <div class="mt-3 bg-gray-100 rounded-full h-2">
+                <div class="bg-emerald-500 h-2 rounded-full transition-all" style="width: 25%"></div>
+            </div>
+            <p class="text-xs text-gray-400 mt-2">已完成 3/17 项采购</p>
+        </div>
+        
+        <!-- 每周汇总视图 -->
+        <div id="weekView" class="px-4 py-4 pb-24 space-y-4">
+            <!-- 肉类 -->
+            <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 bg-red-100 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-drumstick-bite text-red-500"></i>
+                    </div>
+                    <div class="flex-1">
+                        <p class="font-semibold text-gray-900">🥩 肉类</p>
+                        <p class="text-xs text-gray-500">共5件 · 约135元</p>
+                    </div>
+                    <label class="flex items-center gap-1 text-xs text-gray-400">
+                        <input type="checkbox" onchange="toggleCategory(this)" class="w-4 h-4 rounded">
+                        全选
+                    </label>
+                </div>
+                <div class="space-y-3">
+                    <label class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <input type="checkbox" checked onchange="updateProgress()" class="item-checkbox w-5 h-5 rounded border-gray-300 text-emerald-500">
+                            <div>
+                                <p class="text-sm font-medium text-gray-900">鸡腿肉</p>
+                                <p class="text-xs text-gray-400">500g · 用于小炒鸡腿肉、黄焖鸡</p>
+                            </div>
+                        </div>
+                        <span class="text-sm font-medium text-gray-900">¥25</span>
+                    </label>
+                    <label class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <input type="checkbox" checked onchange="updateProgress()" class="item-checkbox w-5 h-5 rounded border-gray-300 text-emerald-500">
+                            <div>
+                                <p class="text-sm font-medium text-gray-900">牛肉片</p>
+                                <p class="text-xs text-gray-400">400g · 用于青椒炒牛肉、照烧肥牛</p>
+                            </div>
+                        </div>
+                        <span class="text-sm font-medium text-gray-900">¥40</span>
+                    </label>
+                    <label class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <input type="checkbox" onchange="updateProgress()" class="item-checkbox w-5 h-5 rounded border-gray-300 text-emerald-500">
+                            <div>
+                                <p class="text-sm font-medium text-gray-900">猪里脊</p>
+                                <p class="text-xs text-gray-400">300g · 用于鱼香肉丝</p>
+                            </div>
+                        </div>
+                        <span class="text-sm font-medium text-gray-900">¥20</span>
+                    </label>
+                    <label class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <input type="checkbox" onchange="updateProgress()" class="item-checkbox w-5 h-5 rounded border-gray-300 text-emerald-500">
+                            <div>
+                                <p class="text-sm font-medium text-gray-900">鲜鱼</p>
+                                <p class="text-xs text-gray-400">约600g · 用于清蒸鱼</p>
+                            </div>
+                        </div>
+                        <span class="text-sm font-medium text-gray-900">¥35</span>
+                    </label>
+                </div>
+            </div>
+            
+            <!-- 蔬菜 -->
+            <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-leaf text-green-500"></i>
+                    </div>
+                    <div class="flex-1">
+                        <p class="font-semibold text-gray-900">🥬 蔬菜</p>
+                        <p class="text-xs text-gray-400">共12件 · 约67元</p>
+                    </div>
+                </div>
+                <div class="space-y-3">
+                    <label class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <input type="checkbox" onchange="updateProgress()" class="item-checkbox w-5 h-5 rounded border-gray-300 text-emerald-500">
+                            <div>
+                                <p class="text-sm font-medium text-gray-900">西蓝花</p>
+                                <p class="text-xs text-gray-400">400g · 用于蒜蓉西蓝花</p>
+                            </div>
+                        </div>
+                        <span class="text-sm font-medium text-gray-900">¥8</span>
+                    </label>
+                    <label class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <input type="checkbox" onchange="updateProgress()" class="item-checkbox w-5 h-5 rounded border-gray-300 text-emerald-500">
+                            <div>
+                                <p class="text-sm font-medium text-gray-900">土豆 <span class="text-xs text-amber-500">(已合并)</span></p>
+                                <p class="text-xs text-gray-400">500g · 用于醋溜土豆丝、干锅土豆片</p>
+                            </div>
+                        </div>
+                        <span class="text-sm font-medium text-gray-900">¥5</span>
+                    </label>
+                    <label class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <input type="checkbox" onchange="updateProgress()" class="item-checkbox w-5 h-5 rounded border-gray-300 text-emerald-500">
+                            <div>
+                                <p class="text-sm font-medium text-gray-900">青椒</p>
+                                <p class="text-xs text-gray-400">200g · 用于青椒炒牛肉</p>
+                            </div>
+                        </div>
+                        <span class="text-sm font-medium text-gray-900">¥4</span>
+                    </label>
+                </div>
+            </div>
+            
+            <!-- 蛋奶主食 -->
+            <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-egg text-amber-500"></i>
+                    </div>
+                    <div class="flex-1">
+                        <p class="font-semibold text-gray-900">🥚🥣 蛋奶 & 主食</p>
+                        <p class="text-xs text-gray-500">共5件 · 约41元</p>
+                    </div>
+                </div>
+                <div class="space-y-3">
+                    <label class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <input type="checkbox" onchange="updateProgress()" class="item-checkbox w-5 h-5 rounded border-gray-300 text-emerald-500">
+                            <div>
+                                <p class="text-sm font-medium text-gray-900">鸡蛋</p>
+                                <p class="text-xs text-gray-400">10个</p>
+                            </div>
+                        </div>
+                        <span class="text-sm font-medium text-gray-900">¥12</span>
+                    </label>
+                    <label class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <input type="checkbox" onchange="updateProgress()" class="item-checkbox w-5 h-5 rounded border-gray-300 text-emerald-500">
+                            <div>
+                                <p class="text-sm font-medium text-gray-900">大米</p>
+                                <p class="text-xs text-gray-400">2kg</p>
+                            </div>
+                        </div>
+                        <span class="text-sm font-medium text-gray-900">¥15</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 每日明细视图 -->
+        <div id="dayView" class="px-4 py-4 pb-24 space-y-4 hidden">
+            <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-calendar text-emerald-600"></i>
+                    </div>
+                    <div class="flex-1">
+                        <p class="font-semibold text-gray-900">周一 6月2日</p>
+                        <p class="text-xs text-gray-500">小炒鸡腿肉、蒜蓉西蓝花、米饭</p>
+                    </div>
+                </div>
+                <div class="space-y-2 bg-gray-50 rounded-xl p-3">
+                    <label class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <input type="checkbox" checked class="w-4 h-4 rounded text-emerald-500">
+                            <span class="text-sm">鸡腿肉 300g</span>
+                        </div>
+                        <span class="text-sm text-gray-500">¥15</span>
+                    </label>
+                    <label class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <input type="checkbox" checked class="w-4 h-4 rounded text-emerald-500">
+                            <span class="text-sm">西蓝花 400g</span>
+                        </div>
+                        <span class="text-sm text-gray-500">¥8</span>
+                    </label>
+                    <label class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <input type="checkbox" class="w-4 h-4 rounded text-emerald-500">
+                            <span class="text-sm">大米 300g</span>
+                        </div>
+                        <span class="text-sm text-gray-500">¥10</span>
+                    </label>
+                </div>
+                <p class="text-right text-sm mt-2 text-emerald-600">已购 ¥23 / ¥33</p>
+            </div>
+            
+            <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-calendar text-blue-600"></i>
+                    </div>
+                    <div class="flex-1">
+                        <p class="font-semibold text-gray-900">周二 6月3日</p>
+                        <p class="text-xs text-gray-500">青椒炒牛肉、醋溜土豆丝、米饭</p>
+                    </div>
+                </div>
+                <div class="space-y-2 bg-gray-50 rounded-xl p-3">
+                    <label class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <input type="checkbox" class="w-4 h-4 rounded text-emerald-500">
+                            <span class="text-sm">牛肉 300g</span>
+                        </div>
+                        <span class="text-sm text-gray-500">¥35</span>
+                    </label>
+                    <label class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <input type="checkbox" class="w-4 h-4 rounded text-emerald-500">
+                            <span class="text-sm">土豆 300g</span>
+                        </div>
+                        <span class="text-sm text-gray-500">¥3</span>
+                    </label>
+                </div>
+                <p class="text-right text-sm mt-2 text-gray-500">待采购 ¥40</p>
+            </div>
+        </div>
+        
+        <!-- 底部操作栏 -->
+        <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 p-4" style="max-width: 375px; margin: 0 auto;">
+            <div class="flex gap-3">
+                <button onclick="resetList()" class="flex-1 py-3 bg-gray-100 text-gray-700 rounded-2xl font-medium flex items-center justify-center gap-2 active:scale-95 transition-transform">
+                    <i class="fas fa-redo"></i> 重置
+                </button>
+                <button onclick="exportToWord()" class="flex-1 py-3 bg-emerald-500 text-white rounded-2xl font-medium flex items-center justify-center gap-2 active:scale-95 transition-transform shadow-lg shadow-emerald-500/30">
+                    <i class="fas fa-file-word"></i> 导出Word
+                </button>
+                <button onclick="completeShopping()" class="flex-1 py-3 bg-amber-500 text-white rounded-2xl font-medium flex items-center justify-center gap-2 active:scale-95 transition-transform shadow-lg shadow-amber-500/30">
+                    <i class="fas fa-check"></i> 完成
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 导出菜单弹窗 -->
+    <div id="exportMenu" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-2xl w-full max-w-sm">
+            <div class="p-4 border-b border-gray-100">
+                <h3 class="font-semibold text-gray-900">导出方式</h3>
+            </div>
+            <div class="p-4 space-y-2">
+                <button onclick="exportToWord()" class="w-full p-4 bg-blue-50 rounded-xl flex items-center gap-3 text-left hover:bg-blue-100 transition-colors">
+                    <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-file-word text-blue-600 text-xl"></i>
+                    </div>
+                    <div>
+                        <p class="font-medium text-gray-900">导出Word文档</p>
+                        <p class="text-xs text-gray-500">可打印版本，适合采购使用</p>
+                    </div>
+                </button>
+                <button onclick="shareList()" class="w-full p-4 bg-gray-50 rounded-xl flex items-center gap-3 text-left hover:bg-gray-100 transition-colors">
+                    <div class="w-12 h-12 bg-gray-200 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-share-alt text-gray-600 text-xl"></i>
+                    </div>
+                    <div>
+                        <p class="font-medium text-gray-900">分享清单</p>
+                        <p class="text-xs text-gray-500">生成分享链接</p>
+                    </div>
+                </button>
+                <button onclick="hideExportMenu()" class="w-full py-3 text-gray-500 text-sm">取消</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Toast -->
+    <div id="toast" class="fixed bottom-24 left-1/2 -translate-x-1/2 bg-gray-800 text-white px-4 py-2 rounded-full text-sm hidden z-50">
+        <span id="toastText"></span>
+    </div>
+    
+    <script>
+        let currentView = 'week';
+        
+        function switchView(view) {
+            const weekTab = document.getElementById('weekTab');
+            const dayTab = document.getElementById('dayTab');
+            const weekView = document.getElementById('weekView');
+            const dayView = document.getElementById('dayView');
+            const daySelector = document.getElementById('daySelector');
+            
+            if (view === 'week') {
+                weekTab.className = 'flex-1 py-2 bg-white text-emerald-600 rounded-lg text-sm font-medium shadow-sm';
+                dayTab.className = 'flex-1 py-2 text-gray-500 rounded-lg text-sm font-medium';
+                weekView.classList.remove('hidden');
+                dayView.classList.add('hidden');
+                daySelector.classList.add('hidden');
+            } else {
+                dayTab.className = 'flex-1 py-2 bg-white text-emerald-600 rounded-lg text-sm font-medium shadow-sm';
+                weekTab.className = 'flex-1 py-2 text-gray-500 rounded-lg text-sm font-medium';
+                dayView.classList.remove('hidden');
+                weekView.classList.add('hidden');
+                daySelector.classList.remove('hidden');
+            }
+            currentView = view;
+        }
+        
+        function showExportMenu() {
+            document.getElementById('exportMenu').classList.remove('hidden');
+            document.getElementById('exportMenu').classList.add('flex');
+        }
+        
+        function hideExportMenu() {
+            document.getElementById('exportMenu').classList.add('hidden');
+            document.getElementById('exportMenu').classList.remove('flex');
+        }
+        
+        function exportToWord() {
+            hideExportMenu();
+            showToast('正在生成Word文档...');
+            
+            // 模拟生成Word（实际需要后端支持）
+            setTimeout(() => {
+                // 创建可打印的内容
+                const content = `
+采购清单 - 6月第1周
+====================
+
+【预算信息】
+总预算：981元
+已完成：245元
+剩余：736元
+
+【肉类】
+[x] 鸡腿肉 500g ¥25 (小炒鸡腿肉、黄焖鸡)
+[x] 牛肉片 400g ¥40 (青椒炒牛肉、照烧肥牛)
+[ ] 猪里脊 300g ¥20 (鱼香肉丝)
+[ ] 鲜鱼 约600g ¥35 (清蒸鱼)
+
+【蔬菜】
+[ ] 西蓝花 400g ¥8 (蒜蓉西蓝花)
+[ ] 土豆 500g ¥5 (醋溜土豆丝、干锅土豆片)
+[ ] 青椒 200g ¥4 (青椒炒牛肉)
+
+【蛋奶主食】
+[ ] 鸡蛋 10个 ¥12
+[ ] 大米 2kg ¥15
+
+====================
+生成时间：${new Date().toLocaleDateString()}
+                `;
+                
+                // 使用浏览器打印功能生成PDF
+                const printWindow = window.open('', '_blank');
+                printWindow.document.write(`
+                    <html>
+                    <head>
+                        <title>采购清单</title>
+                        <style>
+                            body { font-family: 'SimSun', serif; padding: 40px; }
+                            h1 { text-align: center; border-bottom: 2px solid #333; padding-bottom: 10px; }
+                            .section { margin: 20px 0; }
+                            .item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dotted #ccc; }
+                            .checkbox { width: 20px; }
+                            .footer { margin-top: 40px; text-align: center; color: #666; font-size: 12px; }
+                            @media print { body { padding: 20px; } }
+                        </style>
+                    </head>
+                    <body>
+                        <h1>📋 家庭采购清单</h1>
+                        <p style="text-align:center;color:#666;">6月第1周 | 总预算：981元</p>
+                        
+                        <div class="section">
+                            <h2>🥩 肉类</h2>
+                            <div class="item"><span>☑️</span> 鸡腿肉 500g <strong>¥25</strong> <span style="color:#999;font-size:12px;">小炒鸡腿肉、黄焖鸡</span></div>
+                            <div class="item"><span>☑️</span> 牛肉片 400g <strong>¥40</strong> <span style="color:#999;font-size:12px;">青椒炒牛肉、照烧肥牛</span></div>
+                            <div class="item"><span>☐</span> 猪里脊 300g <strong>¥20</strong> <span style="color:#999;font-size:12px;">鱼香肉丝</span></div>
+                            <div class="item"><span>☐</span> 鲜鱼 约600g <strong>¥35</strong> <span style="color:#999;font-size:12px;">清蒸鱼</span></div>
+                        </div>
+                        
+                        <div class="section">
+                            <h2>🥬 蔬菜</h2>
+                            <div class="item"><span>☐</span> 西蓝花 400g <strong>¥8</strong></div>
+                            <div class="item"><span>☐</span> 土豆 500g <strong>¥5</strong> <span style="color:#999;font-size:12px;">(合并)</span></div>
+                            <div class="item"><span>☐</span> 青椒 200g <strong>¥4</strong></div>
+                            <div class="item"><span>☐</span> 菜心 300g <strong>¥5</strong></div>
+                        </div>
+                        
+                        <div class="section">
+                            <h2>🥚 蛋奶主食</h2>
+                            <div class="item"><span>☐</span> 鸡蛋 10个 <strong>¥12</strong></div>
+                            <div class="item"><span>☐</span> 大米 2kg <strong>¥15</strong></div>
+                        </div>
+                        
+                        <div class="footer">
+                            <p>按 Ctrl+P 可打印此清单</p>
+                            <p>生成时间：${new Date().toLocaleString()}</p>
+                        </div>
+                    </body>
+                    </html>
+                `);
+                printWindow.document.close();
+                showToast('Word样式已生成，可打印！');
+            }, 1000);
+        }
+        
+        function shareList() {
+            hideExportMenu();
+            showToast('生成分享链接...');
+            setTimeout(() => {
+                navigator.clipboard.writeText(window.location.origin + '/share/abc123');
+                showToast('分享链接已复制！');
+            }, 500);
+        }
+        
+        function resetList() {
+            document.querySelectorAll('.item-checkbox').forEach(cb => cb.checked = false);
+            showToast('清单已重置');
+        }
+        
+        function completeShopping() {
+            showToast('采购完成！');
+            setTimeout(() => {
+                window.location.href = 'home.html';
+            }, 1000);
+        }
+        
+        function updateProgress() {
+            const checked = document.querySelectorAll('.item-checkbox:checked').length;
+            const total = document.querySelectorAll('.item-checkbox').length;
+            document.querySelector('.bg-emerald-500').style.width = (checked / total * 100) + '%';
+            document.querySelector('#purchased').textContent = checked * 50; // 估算金额
+        }
+        
+        function showToast(text) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastText').textContent = text;
+            toast.classList.remove('hidden');
+            setTimeout(() => toast.classList.add('hidden'), 2000);
+        }
+    </script>
+</body>
+</html>

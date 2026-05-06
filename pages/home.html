@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>家庭菜谱规划</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: '#10B981',
+                        accent: '#F59E0B'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif; }
+        .screen { height: 100vh; overflow-y: auto; }
+        .screen::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="bg-slate-50">
+    <div class="screen">
+        <!-- 状态栏 -->
+        <div class="bg-white px-6 pt-3 pb-2 flex justify-between items-center text-xs">
+            <span class="font-medium">9:41</span>
+            <div class="flex gap-1">
+                <i class="fas fa-signal"></i>
+                <i class="fas fa-wifi"></i>
+                <i class="fas fa-battery-full"></i>
+            </div>
+        </div>
+        
+        <!-- 主内容 -->
+        <div class="px-5 pt-4 pb-24">
+            <!-- 欢迎区域 -->
+            <div class="mb-6">
+                <p class="text-gray-500 text-sm">今天吃什么？</p>
+                <h1 class="text-2xl font-bold text-gray-900 mt-1">家庭菜谱规划</h1>
+            </div>
+            
+            <!-- 规划模式选择 -->
+            <div class="bg-white rounded-2xl p-5 mb-6 shadow-sm border border-gray-100">
+                <h2 class="font-semibold text-gray-900 mb-4">选择规划方式</h2>
+                <div class="grid grid-cols-2 gap-3">
+                    <a href="smart-plan.html" class="active:scale-95 transition-transform">
+                        <div class="bg-gradient-to-br from-emerald-500 to-teal-500 rounded-xl p-4 text-white text-center h-full">
+                            <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mx-auto mb-3">
+                                <i class="fas fa-magic text-xl"></i>
+                            </div>
+                            <p class="font-semibold">智能生成</p>
+                            <p class="text-xs opacity-80 mt-1">AI自动分配菜品</p>
+                        </div>
+                    </a>
+                    <a href="manual-add.html" class="active:scale-95 transition-transform">
+                        <div class="bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl p-4 text-white text-center h-full">
+                            <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mx-auto mb-3">
+                                <i class="fas fa-edit text-xl"></i>
+                            </div>
+                            <p class="font-semibold">手动输入</p>
+                            <p class="text-xs opacity-80 mt-1">自己搭配每天菜品</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- 本周概览 -->
+            <div class="bg-white rounded-2xl p-5 mb-6 shadow-sm border border-gray-100">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="font-semibold text-gray-900">本周菜单</h2>
+                    <a href="menu-preview.html" class="text-emerald-600 text-sm">查看详情</a>
+                </div>
+                <div class="flex justify-between mb-4">
+                    <div class="text-center">
+                        <p class="text-2xl font-bold text-emerald-600">5</p>
+                        <p class="text-xs text-gray-500">已规划天</p>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-2xl font-bold text-amber-600">981</p>
+                        <p class="text-xs text-gray-500">元预算</p>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-2xl font-bold text-blue-600">28</p>
+                        <p class="text-xs text-gray-500">道菜品</p>
+                    </div>
+                </div>
+                <!-- 每日进度 -->
+                <div class="space-y-2">
+                    <div class="flex items-center gap-3">
+                        <span class="text-xs text-gray-500 w-8">周一</span>
+                        <div class="flex-1 bg-gray-100 rounded-full h-2">
+                            <div class="bg-emerald-500 h-2 rounded-full w-full"></div>
+                        </div>
+                        <i class="fas fa-check-circle text-emerald-500 text-sm"></i>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-xs text-gray-500 w-8">周二</span>
+                        <div class="flex-1 bg-gray-100 rounded-full h-2">
+                            <div class="bg-emerald-500 h-2 rounded-full w-full"></div>
+                        </div>
+                        <i class="fas fa-check-circle text-emerald-500 text-sm"></i>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-xs text-gray-500 w-8">周三</span>
+                        <div class="flex-1 bg-gray-100 rounded-full h-2">
+                            <div class="bg-emerald-500 h-2 rounded-full w-1/2"></div>
+</div>
+                        <i class="fas fa-clock text-amber-500 text-sm"></i>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-xs text-gray-500 w-8">周四</span>
+                        <div class="flex-1 bg-gray-100 rounded-full h-2">
+                            <div class="bg-gray-200 h-2 rounded-full w-full"></div>
+                        </div>
+                        <span class="text-xs text-gray-400">未规划</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 快速操作 -->
+            <div class="mb-6">
+                <h2 class="font-semibold text-gray-900 mb-3">快捷操作</h2>
+                <div class="grid grid-cols-2 gap-3">
+                    <a href="menu-preview.html" class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 flex items-center gap-3">
+                        <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-calendar-week text-blue-600"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-gray-900">菜单预览</p>
+                            <p class="text-xs text-gray-500">调整菜品</p>
+                        </div>
+                    </a>
+                    <a href="shop-list.html" class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 flex items-center gap-3">
+                        <div class="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-shopping-cart text-amber-600"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-gray-900">采购清单</p>
+                            <p class="text-xs text-gray-500">查看采购</p>
+                        </div>
+                    </a>
+                    <a href="recipes.html" class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 flex items-center gap-3">
+                        <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-book-open text-purple-600"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-gray-900">我的菜谱</p>
+                            <p class="text-xs text-gray-500">管理菜品库</p>
+                        </div>
+                    </a>
+                    <a href="preference.html" class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 flex items-center gap-3">
+                        <div class="w-10 h-10 bg-rose-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-sliders-h text-rose-600"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-gray-900">口味偏好</p>
+                            <p class="text-xs text-gray-500">设置禁忌</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- 时令推荐 -->
+            <div>
+                <h2 class="font-semibold text-gray-900 mb-3">时令食材</h2>
+                <div class="flex gap-3 overflow-x-auto pb-2">
+                    <div class="flex-shrink-0 bg-white rounded-xl p-3 text-center shadow-sm border border-gray-100">
+                        <div class="w-14 h-14 bg-green-100 rounded-lg flex items-center justify-center mb-2 mx-auto">
+                            <span class="text-2xl">🥦</span>
+                        </div>
+                        <p class="text-xs text-gray-700">西蓝花</p>
+                    </div>
+                    <div class="flex-shrink-0 bg-white rounded-xl p-3 text-center shadow-sm border border-gray-100">
+                        <div class="w-14 h-14 bg-orange-100 rounded-lg flex items-center justify-center mb-2 mx-auto">
+                            <span class="text-2xl">🥕</span>
+                        </div>
+                        <p class="text-xs text-gray-700">胡萝卜</p>
+                    </div>
+                    <div class="flex-shrink-0 bg-white rounded-xl p-3 text-center shadow-sm border border-gray-100">
+                        <div class="w-14 h-14 bg-red-100 rounded-lg flex items-center justify-center mb-2 mx-auto">
+                            <span class="text-2xl">🍅</span>
+                        </div>
+                        <p class="text-xs text-gray-700">西红柿</p>
+                    </div>
+                    <div class="flex-shrink-0 bg-white rounded-xl p-3 text-center shadow-sm border border-gray-100">
+                        <div class="w-14 h-14 bg-cyan-100 rounded-lg flex items-center justify-center mb-2 mx-auto">
+                            <span class="text-2xl">🐟</span>
+                        </div>
+                        <p class="text-xs text-gray-700">鲜鱼</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 底部导航 -->
+        <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 px-6 py-3 flex justify-between items-center" style="max-width: 375px; margin: 0 auto;">
+            <a href="home.html" class="flex flex-col items-center text-emerald-600">
+                <i class="fas fa-home text-lg"></i>
+                <span class="text-xs mt-1">首页</span>
+            </a>
+            <a href="menu-preview.html" class="flex flex-col items-center text-gray-400">
+                <i class="fas fa-calendar-week text-lg"></i>
+                <span class="text-xs mt-1">菜单</span>
+            </a>
+            <a href="smart-plan.html" class="flex flex-col items-center text-gray-400">
+                <i class="fas fa-plus-circle text-lg"></i>
+                <span class="text-xs mt-1">规划</span>
+            </a>
+            <a href="recipes.html" class="flex flex-col items-center text-gray-400">
+                <i class="fas fa-utensils text-lg"></i>
+                <span class="text-xs mt-1">菜谱</span>
+            </a>
+            <a href="preference.html" class="flex flex-col items-center text-gray-400">
+                <i class="fas fa-cog text-lg"></i>
+                <span class="text-xs mt-1">设置</span>
+            </a>
+        </div>
+    </div>
+</body>
+</html>

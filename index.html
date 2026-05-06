@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>家庭菜谱规划 v3.0</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: '#10B981',
+                        accent: '#F59E0B'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif; }
+        .phone-frame {
+            width: 375px;
+            height: 812px;
+            border-radius: 40px;
+            box-shadow: 0 0 0 12px #1F2937, 0 0 0 14px #374151;
+            overflow: hidden;
+            background: #fff;
+        }
+        .screen {
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+        .screen::-webkit-scrollbar { display: none; }
+        .active\:scale-95:active { transform: scale(0.95); }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-900 to-slate-800 min-h-screen">
+    <div class="max-w-full px-4 py-8">
+        <h1 class="text-white text-3xl font-bold text-center mb-2">家庭菜谱规划工具</h1>
+        <p class="text-gray-400 text-center mb-8">v3.0 新版 · 支持自定义菜谱 · AI自动拆解 · 导出Word</p>
+        
+        <div class="flex gap-6 flex-wrap justify-center">
+            <!-- 首页 -->
+            <div class="phone-frame">
+                <iframe src="pages/home.html" class="w-full h-full border-0" title="首页"></iframe>
+            </div>
+            <!-- 智能规划 -->
+            <div class="phone-frame">
+                <iframe src="pages/smart-plan.html" class="w-full h-full border-0" title="智能规划"></iframe>
+            </div>
+            <!-- 手动添加 -->
+            <div class="phone-frame">
+                <iframe src="pages/manual-add.html" class="w-full h-full border-0" title="手动添加"></iframe>
+            </div>
+            <!-- 采购清单 -->
+            <div class="phone-frame">
+                <iframe src="pages/shop-list.html" class="w-full h-full border-0" title="采购清单"></iframe>
+            </div>
+            <!-- 口味偏好 -->
+            <div class="phone-frame">
+                <iframe src="pages/preference.html" class="w-full h-full border-0" title="口味偏好"></iframe>
+            </div>
+            <!-- 菜谱详情 -->
+            <div class="phone-frame">
+                <iframe src="pages/recipe-detail.html" class="w-full h-full border-0" title="菜谱详情"></iframe>
+            </div>
+        </div>
+        
+        <div class="mt-8 text-center">
+            <p class="text-emerald-400 text-sm">✅ 已修复Tab切换 | ✅ 支持自定义菜名 | ✅ AI拆解食材 | ✅ 导出Word | ✅ 一周/半月/月生成</p>
+        </div>
+    </div>
+</body>
+</html>

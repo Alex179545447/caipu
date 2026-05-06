@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>菜单预览</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>tailwind.config = { theme: { extend: { colors: { brand: '#10B981', accent: '#F59E0B' } } } }</script>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif; }
+        .screen { height: 100vh; overflow-y: auto; }
+        .screen::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="bg-slate-50">
+    <div class="screen">
+        <div class="bg-white px-6 pt-3 pb-2 flex justify-between items-center text-xs">
+            <span class="font-medium">9:41</span>
+            <div class="flex gap-1"><i class="fas fa-signal"></i><i class="fas fa-wifi"></i><i class="fas fa-battery-full"></i></div>
+        </div>
+        <div class="bg-white px-4 py-3 flex items-center justify-between border-b border-gray-100">
+            <a href="plan-setup.html" class="text-gray-600"><i class="fas fa-chevron-left text-lg"></i></a>
+            <h1 class="font-semibold text-gray-900">本周菜单</h1>
+            <a href="#" class="text-emerald-600 text-sm">编辑</a>
+        </div>
+        <div class="px-4 py-4 bg-gradient-to-r from-emerald-500 to-teal-500">
+            <div class="flex justify-around text-white">
+                <div class="text-center"><p class="text-2xl font-bold">7</p><p class="text-xs opacity-80">天</p></div>
+                <div class="text-center"><p class="text-2xl font-bold">28</p><p class="text-xs opacity-80">道菜</p></div>
+                <div class="text-center"><p class="text-2xl font-bold">981</p><p class="text-xs opacity-80">元预算</p></div>
+            </div>
+        </div>
+        <div class="px-4 py-4 pb-24 space-y-4">
+            <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+                <div class="flex justify-between items-center mb-3">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center">
+                            <span class="text-emerald-600 font-bold">一</span>
+                        </div>
+                        <div><p class="font-semibold text-gray-900">6月2日 周一</p><p class="text-xs text-gray-500">简单</p></div>
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <div class="flex items-center gap-3"><div class="w-8 h-8 bg-red-50 rounded-lg flex items-center justify-center"><i class="fas fa-drumstick-bite text-red-400 text-sm"></i></div><div class="flex-1"><p class="text-sm font-medium text-gray-900">小炒鸡腿肉</p><p class="text-xs text-gray-400">鸡腿肉 300g</p></div></div>
+                    <div class="flex items-center gap-3"><div class="w-8 h-8 bg-green-50 rounded-lg flex items-center justify-center"><i class="fas fa-leaf text-green-400 text-sm"></i></div><div class="flex-1"><p class="text-sm font-medium text-gray-900">蒜蓉西蓝花</p><p class="text-xs text-gray-400">西蓝花 400g</p></div></div>
+                    <div class="flex items-center gap-3"><div class="w-8 h-8 bg-amber-50 rounded-lg flex items-center justify-center"><i class="fas fa-bowl-rice text-amber-400 text-sm"></i></div><div class="flex-1"><p class="text-sm font-medium text-gray-900">米饭</p><p class="text-xs text-gray-400">大米 300g</p></div></div>
+                </div>
+            </div>
+            <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+                <div class="flex justify-between items-center mb-3">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center"><span class="text-blue-600 font-bold">二</span></div>
+                        <div><p class="font-semibold text-gray-900">6月3日 周二</p><p class="text-xs text-gray-500">简单</p></div>
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <div class="flex items-center gap-3"><div class="w-8 h-8 bg-red-50 rounded-lg flex items-center justify-center"><i class="fas fa-drumstick-bite text-red-400 text-sm"></i></div><div class="flex-1"><p class="text-sm font-medium text-gray-900">青椒炒牛肉</p><p class="text-xs text-gray-400">牛肉 300g</p></div></div>
+                    <div class="flex items-center gap-3"><div class="w-8 h-8 bg-green-50 rounded-lg flex items-center justify-center"><i class="fas fa-leaf text-green-400 text-sm"></i></div><div class="flex-1"><p class="text-sm font-medium text-gray-900">醋溜土豆丝</p><p class="text-xs text-gray-400">土豆 300g</p></div></div>
+                </div>
+            </div>
+            <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+                <div class="flex justify-between items-center mb-3">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center"><span class="text-amber-600 font-bold">五</span></div>
+                        <div><p class="font-semibold text-gray-900">6月6日 周五</p><p class="text-xs text-amber-500">快捷</p></div>
+                    </div>
+                    <span class="bg-amber-100 text-amber-600 text-xs px-2 py-1 rounded-full">省时</span>
+                </div>
+                <div class="space-y-2">
+                    <div class="flex items-center gap-3"><div class="w-8 h-8 bg-red-50 rounded-lg flex items-center justify-center"><i class="fas fa-drumstick-bite text-red-400 text-sm"></i></div><div class="flex-1"><p class="text-sm font-medium text-gray-900">照烧肥牛</p><p class="text-xs text-gray-400">肥牛 200g</p></div></div>
+                    <div class="flex items-center gap-3"><div class="w-8 h-8 bg-green-50 rounded-lg flex items-center justify-center"><i class="fas fa-leaf text-green-400 text-sm"></i></div><div class="flex-1"><p class="text-sm font-medium text-gray-900">白灼菜心</p><p class="text-xs text-gray-400">菜心 300g</p></div></div>
+                </div>
+            </div>
+            <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+                <div class="flex justify-between items-center mb-3">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-rose-100 rounded-xl flex items-center justify-center"><span class="text-rose-600 font-bold">六</span></div>
+                        <div><p class="font-semibold text-gray-900">6月7日 周六</p><p class="text-xs text-rose-500">复杂</p></div>
+                    </div>
+                    <span class="bg-rose-100 text-rose-600 text-xs px-2 py-1 rounded-full">精致</span>
+                </div>
+                <div class="space-y-2">
+                    <div class="flex items-center gap-3"><div class="w-8 h-8 bg-red-50 rounded-lg flex items-center justify-center"><i class="fas fa-drumstick-bite text-red-400 text-sm"></i></div><div class="flex-1"><p class="text-sm font-medium text-gray-900">黄焖鸡</p><p class="text-xs text-gray-400">鸡腿肉 400g</p></div></div>
+                    <div class="flex items-center gap-3"><div class="w-8 h-8 bg-green-50 rounded-lg flex items-center justify-center"><i class="fas fa-leaf text-green-400 text-sm"></i></div><div class="flex-1"><p class="text-sm font-medium text-gray-900">干锅土豆片</p><p class="text-xs text-gray-400">土豆 300g</p></div></div>
+                </div>
+            </div>
+        </div>
+        <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 p-4 flex gap-3" style="max-width: 375px; margin: 0 auto;">
+            <a href="shop-list.html" class="flex-1 bg-emerald-500 text-white text-center py-4 rounded-2xl font-semibold active:scale-95 transition-transform shadow-lg shadow-emerald-500/30">生成采购清单</a>
+        </div>
+    </div>
+</body>
+</html>

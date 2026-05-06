@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>规划设置</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: { extend: { colors: { brand: '#10B981', accent: '#F59E0B' } } }
+        }
+    </script>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif; }
+        .screen { height: 100vh; overflow-y: auto; }
+        .screen::-webkit-scrollbar { display: none; }
+        input[type="range"] { -webkit-appearance: none; }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 24px; height: 24px;
+            background: #10B981;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body class="bg-slate-50">
+    <div class="screen">
+        <!-- 状态栏 -->
+        <div class="bg-white px-6 pt-3 pb-2 flex justify-between items-center text-xs">
+            <span class="font-medium">9:41</span>
+            <div class="flex gap-1">
+                <i class="fas fa-signal"></i>
+                <i class="fas fa-wifi"></i>
+                <i class="fas fa-battery-full"></i>
+            </div>
+        </div>
+        
+        <!-- 导航栏 -->
+        <div class="bg-white px-4 py-3 flex items-center justify-between border-b border-gray-100">
+            <a href="home.html" class="text-gray-600">
+                <i class="fas fa-chevron-left text-lg"></i>
+            </a>
+            <h1 class="font-semibold text-gray-900">智能规划</h1>
+            <div class="w-8"></div>
+        </div>
+        
+        <!-- 主内容 -->
+        <div class="px-5 py-6 pb-24">
+            <p class="text-gray-500 text-sm mb-6">设置您的规划偏好，我们将为您生成最佳菜单方案</p>
+            
+            <!-- 规划天数 -->
+            <div class="bg-white rounded-2xl p-5 mb-4 shadow-sm border border-gray-100">
+                <div class="flex justify-between items-center mb-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-calendar-days text-emerald-600"></i>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-gray-900">规划天数</p>
+                            <p class="text-xs text-gray-500">设置本周需要规划的餐数</p>
+                        </div>
+                    </div>
+                    <span class="text-emerald-600 font-bold text-xl" id="daysValue">7天</span>
+                </div>
+                <input type="range" min="3" max="14" value="7" 
+                       class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                       oninput="document.getElementById('daysValue').textContent = this.value + '天'">
+                <div class="flex justify-between text-xs text-gray-400 mt-2">
+                    <span>3天</span>
+                    <span>7天</span>
+                    <span>14天</span>
+                </div>
+            </div>
+            
+            <!-- 用餐人数 -->
+            <div class="bg-white rounded-2xl p-5 mb-4 shadow-sm border border-gray-100">
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-users text-blue-600"></i>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-gray-900">用餐人数</p>
+                            <p class="text-xs text-gray-500">家庭成员数量</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <button onclick="changeCount('people', -1)" class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center text-gray-600">
+                            <i class="fas fa-minus text-xs"></i>
+                        </button>
+                        <span class="text-emerald-600 font-bold text-xl w-8 text-center" id="peopleCount">3人</span>
+                        <button onclick="changeCount('people', 1)" class="w-8 h-8 bg-emerald-500 rounded-full flex items-center justify-center text-white">
+                            <i class="fas fa-plus text-xs"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 周预算 -->
+            <div class="bg-white rounded-2xl p-5 mb-4 shadow-sm border border-gray-100">
+                <div class="flex justify-between items-center mb-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-coins text-amber-600"></i>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-gray-900">周预算</p>
+                            <p class="text-xs text-gray-500">设置每周餐饮预算上限</p>
+                        </div>
+                    </div>
+                    <span class="text-emerald-600 font-bold text-xl" id="budgetValue">250元</span>
+                </div>
+                <input type="range" min="100" max="1000" value="250" step="10"
+                       class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                       oninput="document.getElementById('budgetValue').textContent = this.value + '元'">
+                <div class="flex justify-between text-xs text-gray-400 mt-2">
+                    <span>100元</span>
+                    <span>500元</span>
+                    <span>1000元</span>
+                </div>
+            </div>
+            
+            <!-- 复杂度偏好 -->
+            <div class="bg-white rounded-2xl p-5 mb-4 shadow-sm border border-gray-100">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-signal text-purple-600"></i>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-gray-900">复杂度偏好</p>
+                        <p class="text-xs text-gray-500">根据时间选择菜品难度</p>
+                    </div>
+                </div>
+                <div class="flex gap-2">
+                    <button class="flex-1 py-3 bg-emerald-500 text-white rounded-xl text-sm font-medium">简单优先</button>
+                    <button class="flex-1 py-3 bg-gray-100 text-gray-600 rounded-xl text-sm font-medium">均衡</button>
+                    <button class="flex-1 py-3 bg-gray-100 text-gray-600 rounded-xl text-sm font-medium">复杂</button>
+                </div>
+            </div>
+            
+            <!-- 口味偏好 -->
+            <div class="bg-white rounded-2xl p-5 mb-4 shadow-sm border border-gray-100">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 bg-rose-100 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-heart text-rose-600"></i>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-gray-900">口味偏好</p>
+                        <p class="text-xs text-gray-500">选择喜欢的口味（可多选）</p>
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <button class="px-4 py-2 bg-emerald-50 text-emerald-600 rounded-full text-sm border border-emerald-200">家常</button>
+                    <button class="px-4 py-2 bg-gray-50 text-gray-600 rounded-full text-sm border border-gray-200">辣味</button>
+                    <button class="px-4 py-2 bg-emerald-50 text-emerald-600 rounded-full text-sm border border-emerald-200">清淡</button>
+                    <button class="px-4 py-2 bg-gray-50 text-gray-600 rounded-full text-sm border border-gray-200">重口</button>
+                    <button class="px-4 py-2 bg-gray-50 text-gray-600 rounded-full text-sm border border-gray-200">甜口</button>
+                    <button class="px-4 py-2 bg-gray-50 text-gray-600 rounded-full text-sm border border-gray-200">酸味</button>
+                </div>
+            </div>
+            
+            <!-- 特殊需求 -->
+            <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 bg-cyan-100 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-lightbulb text-cyan-600"></i>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-gray-900">特殊需求</p>
+                        <p class="text-xs text-gray-500">其他饮食限制</p>
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <button class="px-4 py-2 bg-gray-50 text-gray-600 rounded-full text-sm border border-gray-200">无特殊需求</button>
+                    <button class="px-4 py-2 bg-gray-50 text-gray-600 rounded-full text-sm border border-gray-200">少油</button>
+                    <button class="px-4 py-2 bg-gray-50 text-gray-600 rounded-full text-sm border border-gray-200">少盐</button>
+                    <button class="px-4 py-2 bg-gray-50 text-gray-600 rounded-full text-sm border border-gray-200">高蛋白</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 底部按钮 -->
+        <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 p-4" style="max-width: 375px; margin: 0 auto;">
+            <a href="menu-preview.html" class="block w-full bg-emerald-500 text-white text-center py-4 rounded-2xl font-semibold active:scale-95 transition-transform shadow-lg shadow-emerald-500/30">
+                开始生成菜单
+            </a>
+        </div>
+    </div>
+    
+    <script>
+        let peopleCount = 3;
+        function changeCount(type, delta) {
+            if (type === 'people') {
+                peopleCount = Math.max(1, Math.min(10, peopleCount + delta));
+                document.getElementById('peopleCount').textContent = peopleCount + '人';
+            }
+        }
+    </script>
+</body>
+</html>

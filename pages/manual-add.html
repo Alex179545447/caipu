@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>手动添加菜品</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>tailwind.config = { theme: { extend: { colors: { brand: '#10B981', accent: '#F59E0B' } } } }</script>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif; }
+        .screen { height: 100vh; overflow-y: auto; }
+        .screen::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="bg-slate-50">
+    <div class="screen">
+        <div class="bg-white px-6 pt-3 pb-2 flex justify-between items-center text-xs">
+            <span class="font-medium">9:41</span>
+            <div class="flex gap-1"><i class="fas fa-signal"></i><i class="fas fa-wifi"></i><i class="fas fa-battery-full"></i></div>
+        </div>
+        <div class="bg-white px-4 py-3 flex items-center justify-between border-b border-gray-100">
+            <a href="home.html" class="text-gray-600"><i class="fas fa-chevron-left text-lg"></i></a>
+            <h1 class="font-semibold text-gray-900">手动输入</h1>
+            <a href="menu-preview.html" class="text-emerald-600 text-sm">完成</a>
+        </div>
+        
+        <!-- 进度指示 -->
+        <div class="bg-white px-4 py-3 border-b border-gray-100">
+            <div class="flex justify-center gap-1">
+                <div class="w-8 h-8 bg-emerald-500 text-white rounded-full flex items-center justify-center text-sm font-medium">1</div>
+                <div class="w-6 h-0.5 bg-emerald-500 mt-4"></div>
+                <div class="w-8 h-8 bg-emerald-500 text-white rounded-full flex items-center justify-center text-sm font-medium">2</div>
+                <div class="w-6 h-0.5 bg-gray-200 mt-4"></div>
+                <div class="w-8 h-8 bg-gray-200 text-gray-400 rounded-full flex items-center justify-center text-sm font-medium">3</div>
+                <div class="w-6 h-0.5 bg-gray-200 mt-4"></div>
+                <div class="w-8 h-8 bg-gray-200 text-gray-400 rounded-full flex items-center justify-center text-sm font-medium">4</div>
+                <div class="w-6 h-0.5 bg-gray-200 mt-4"></div>
+                <div class="w-8 h-8 bg-gray-200 text-gray-400 rounded-full flex items-center justify-center text-sm font-medium">5</div>
+                <div class="w-6 h-0.5 bg-gray-200 mt-4"></div>
+                <div class="w-8 h-8 bg-gray-200 text-gray-400 rounded-full flex items-center justify-center text-sm font-medium">6</div>
+                <div class="w-6 h-0.5 bg-gray-200 mt-4"></div>
+                <div class="w-8 h-8 bg-gray-200 text-gray-400 rounded-full flex items-center justify-center text-sm font-medium">7</div>
+            </div>
+            <p class="text-center text-sm text-gray-500 mt-2">正在添加：周一 午餐</p>
+        </div>
+        
+        <!-- 已添加的菜品 -->
+        <div class="px-4 py-4">
+            <div class="bg-emerald-50 rounded-xl p-4 mb-4 border border-emerald-100">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-check-circle text-emerald-500"></i>
+                        <span class="text-sm font-medium text-emerald-700">周一已添加</span>
+                    </div>
+                    <span class="text-xs text-gray-400">3道菜</span>
+                </div>
+                <div class="flex gap-2 flex-wrap">
+                    <span class="bg-white px-3 py-1 rounded-full text-xs text-gray-700 border flex items-center gap-1">
+                        <i class="fas fa-drumstick-bite text-red-400 text-xs"></i> 小炒鸡腿肉
+                    </span>
+                    <span class="bg-white px-3 py-1 rounded-full text-xs text-gray-700 border flex items-center gap-1">
+                        <i class="fas fa-leaf text-green-400 text-xs"></i> 蒜蓉西蓝花
+                    </span>
+                    <span class="bg-white px-3 py-1 rounded-full text-xs text-gray-700 border flex items-center gap-1">
+                        <i class="fas fa-bowl-rice text-amber-400 text-xs"></i> 米饭
+                    </span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 当前添加 -->
+        <div class="px-4 pb-24">
+            <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 mb-4">
+                <h3 class="font-semibold text-gray-900 mb-3">周二 午餐</h3>
+                
+                <!-- 搜索框 - 支持自定义输入 -->
+                <div class="relative mb-4">
+                    <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                    <input type="text" id="recipeSearch" placeholder="输入菜品名称（支持任意自定义）..." class="w-full pl-10 pr-4 py-3 bg-gray-50 rounded-xl text-sm outline-none focus:ring-2 focus:ring-emerald-500">
+                </div>
+                
+                <!-- 分类Tab - 带交互 -->
+                <div class="flex gap-2 mb-4 overflow-x-auto pb-2" id="categoryTabs">
+                    <button onclick="switchCategory(this, 'meat')" class="category-tab px-4 py-2 bg-emerald-500 text-white rounded-full text-sm whitespace-nowrap transition-all" data-category="meat">
+                        <i class="fas fa-drumstick-bite mr-1"></i>荤菜
+                    </button>
+                    <button onclick="switchCategory(this, 'veg')" class="category-tab px-4 py-2 bg-gray-100 text-gray-600 rounded-full text-sm whitespace-nowrap transition-all" data-category="veg">
+                        <i class="fas fa-leaf mr-1"></i>素菜
+                    </button>
+                    <button onclick="switchCategory(this, 'staple')" class="category-tab px-4 py-2 bg-gray-100 text-gray-600 rounded-full text-sm whitespace-nowrap transition-all" data-category="staple">
+                        <i class="fas fa-bowl-rice mr-1"></i>主食
+                    </button>
+                    <button onclick="switchCategory(this, 'soup')" class="category-tab px-4 py-2 bg-gray-100 text-gray-600 rounded-full text-sm whitespace-nowrap transition-all" data-category="soup">
+                        <i class="fas fa-mug-hot mr-1"></i>汤
+                    </button>
+                </div>
+                
+                <!-- 推荐菜谱列表 -->
+                <div id="recipeList" class="space-y-2 mb-4">
+                    <!-- 荤菜列表 -->
+                    <div class="recipe-group" data-category="meat">
+                        <p class="text-xs text-gray-400 mb-2">推荐荤菜</p>
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 active:scale-98 transition-all" onclick="selectRecipe('红烧肉', 'meat')">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 bg-red-50 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-drumstick-bite text-red-400"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-900">红烧肉</p>
+                                        <p class="text-xs text-gray-400">约40分钟 · 猪肉</p>
+                                    </div>
+                                </div>
+                                <i class="fas fa-plus text-emerald-500"></i>
+                            </div>
+                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 active:scale-98 transition-all" onclick="selectRecipe('清蒸鲈鱼', 'meat')">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 bg-cyan-50 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-fish text-cyan-400"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-900">清蒸鲈鱼</p>
+                                        <p class="text-xs text-gray-400">约25分钟 · 鱼肉</p>
+                                    </div>
+                                </div>
+                                <i class="fas fa-plus text-emerald-500"></i>
+                            </div>
+                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 active:scale-98 transition-all" onclick="selectRecipe('宫保鸡丁', 'meat')">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 bg-orange-50 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-drumstick-bite text-orange-400"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-900">宫保鸡丁</p>
+                                        <p class="text-xs text-gray-400">约20分钟 · 鸡肉</p>
+                                    </div>
+                                </div>
+                                <i class="fas fa-plus text-emerald-500"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 素菜列表（隐藏） -->
+                    <div class="recipe-group hidden" data-category="veg">
+                        <p class="text-xs text-gray-400 mb-2">推荐素菜</p>
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 active:scale-98 transition-all" onclick="selectRecipe('清炒时蔬', 'veg')">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-leaf text-green-400"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-900">清炒时蔬</p>
+                                        <p class="text-xs text-gray-400">约10分钟 · 蔬菜</p>
+                                    </div>
+                                </div>
+                                <i class="fas fa-plus text-emerald-500"></i>
+                            </div>
+                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 active:scale-98 transition-all" onclick="selectRecipe('酸辣土豆丝', 'veg')">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 bg-yellow-50 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-carrot text-yellow-400"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-900">酸辣土豆丝</p>
+                                        <p class="text-xs text-gray-400">约15分钟 · 土豆</p>
+                                    </div>
+                                </div>
+                                <i class="fas fa-plus text-emerald-500"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 主食列表（隐藏） -->
+                    <div class="recipe-group hidden" data-category="staple">
+                        <p class="text-xs text-gray-400 mb-2">推荐主食</p>
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 active:scale-98 transition-all" onclick="selectRecipe('白米饭', 'staple')">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 bg-amber-50 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-bowl-rice text-amber-400"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-900">白米饭</p>
+                                        <p class="text-xs text-gray-400">约30分钟 · 大米</p>
+                                    </div>
+                                </div>
+                                <i class="fas fa-plus text-emerald-500"></i>
+                            </div>
+                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 active:scale-98 transition-all" onclick="selectRecipe('炸酱面', 'staple')">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 bg-amber-50 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-utensils text-amber-400"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-900">炸酱面</p>
+                                        <p class="text-xs text-gray-400">约20分钟 · 面条</p>
+                                    </div>
+                                </div>
+                                <i class="fas fa-plus text-emerald-500"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 汤列表（隐藏） -->
+                    <div class="recipe-group hidden" data-category="soup">
+                        <p class="text-xs text-gray-400 mb-2">推荐汤品</p>
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 active:scale-98 transition-all" onclick="selectRecipe('紫菜蛋花汤', 'soup')">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 bg-purple-50 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-mug-hot text-purple-400"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-900">紫菜蛋花汤</p>
+                                        <p class="text-xs text-gray-400">约10分钟 · 简单</p>
+                                    </div>
+                                </div>
+                                <i class="fas fa-plus text-emerald-500"></i>
+                            </div>
+                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 active:scale-98 transition-all" onclick="selectRecipe('番茄牛腩汤', 'soup')">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 bg-red-50 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-mug-hot text-red-400"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-900">番茄牛腩汤</p>
+                                        <p class="text-xs text-gray-400">约40分钟 · 牛肉</p>
+                                    </div>
+                                </div>
+                                <i class="fas fa-plus text-emerald-500"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 自定义菜品输入 -->
+                <div class="bg-amber-50 rounded-xl p-4 border border-amber-100 mb-4">
+                    <div class="flex items-center gap-2 mb-3">
+                        <i class="fas fa-lightbulb text-amber-500"></i>
+                        <span class="text-sm font-medium text-amber-700">自定义菜品</span>
+                    </div>
+                    <p class="text-xs text-amber-600 mb-3">输入任意菜品名称，系统会自动拆解所需食材</p>
+                    <div class="flex gap-2">
+                        <input type="text" id="customRecipe" placeholder="例如：糖醋排骨" class="flex-1 px-3 py-2 bg-white rounded-lg text-sm outline-none">
+                        <button onclick="addCustomRecipe()" class="px-4 py-2 bg-amber-500 text-white rounded-lg text-sm font-medium">
+                            添加
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- 新建菜品按钮 -->
+                <button onclick="showCreateRecipeModal()" class="w-full py-3 border-2 border-dashed border-gray-300 rounded-xl text-gray-400 text-sm flex items-center justify-center gap-2 hover:border-emerald-400 hover:text-emerald-500 transition-all">
+                    <i class="fas fa-plus-circle"></i>
+                    创建新菜品（带完整食材配方）
+                </button>
+            </div>
+            
+            <!-- 快捷操作 -->
+            <div class="flex gap-3">
+                <button class="flex-1 py-3 bg-gray-100 text-gray-600 rounded-xl text-sm font-medium flex items-center justify-center gap-2">
+                    <i class="fas fa-copy"></i> 复制上周
+                </button>
+                <a href="menu-preview.html" class="flex-1 py-3 bg-emerald-500 text-white rounded-xl text-sm font-medium flex items-center justify-center gap-2">
+                    完成添加 <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 创建菜品弹窗 -->
+    <div id="createModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-2xl w-full max-w-sm max-h-[80vh] overflow-y-auto">
+            <div class="p-4 border-b border-gray-100 flex items-center justify-between">
+                <h3 class="font-semibold text-gray-900">创建新菜品</h3>
+                <button onclick="hideCreateModal()" class="text-gray-400"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="p-4 space-y-4">
+                <div>
+                    <label class="text-sm text-gray-600 mb-1 block">菜品名称</label>
+                    <input type="text" id="newRecipeName" placeholder="例如：红烧排骨" class="w-full px-3 py-2 border rounded-lg text-sm">
+                </div>
+                <div>
+                    <label class="text-sm text-gray-600 mb-1 block">菜品类型</label>
+                    <select id="newRecipeType" class="w-full px-3 py-2 border rounded-lg text-sm">
+                        <option value="meat">荤菜</option>
+                        <option value="veg">素菜</option>
+                        <option value="staple">主食</option>
+                        <option value="soup">汤</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="text-sm text-gray-600 mb-1 block">主要食材（用逗号分隔）</label>
+                    <input type="text" id="newRecipeIngredients" placeholder="例如：排骨500g, 生抽, 老抽, 冰糖" class="w-full px-3 py-2 border rounded-lg text-sm">
+                </div>
+                <div>
+                    <label class="text-sm text-gray-600 mb-1 block">预估价格（元）</label>
+                    <input type="number" id="newRecipePrice" placeholder="例如：30" class="w-full px-3 py-2 border rounded-lg text-sm">
+                </div>
+                <button onclick="createRecipe()" class="w-full py-3 bg-emerald-500 text-white rounded-xl text-sm font-medium">
+                    创建并添加
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Toast提示 -->
+    <div id="toast" class="fixed bottom-24 left-1/2 -translate-x-1/2 bg-gray-800 text-white px-4 py-2 rounded-full text-sm hidden z-50">
+        <i class="fas fa-check-circle mr-1"></i>
+        <span id="toastText">已添加</span>
+    </div>
+    
+    <script>
+        let currentCategory = 'meat';
+        let addedRecipes = [];
+        
+        // Tab切换
+        function switchCategory(btn, category) {
+            // 更新Tab样式
+            document.querySelectorAll('.category-tab').forEach(tab => {
+                tab.classList.remove('bg-emerald-500', 'text-white');
+                tab.classList.add('bg-gray-100', 'text-gray-600');
+            });
+            btn.classList.remove('bg-gray-100', 'text-gray-600');
+            btn.classList.add('bg-emerald-500', 'text-white');
+            
+            // 显示对应分类的菜谱
+            document.querySelectorAll('.recipe-group').forEach(group => {
+                group.classList.add('hidden');
+            });
+            document.querySelector(`.recipe-group[data-category="${category}"]`).classList.remove('hidden');
+            
+            currentCategory = category;
+        }
+        
+        // 选择菜谱
+        function selectRecipe(name, type) {
+            const icons = {
+                meat: '<i class="fas fa-drumstick-bite text-red-400"></i>',
+                veg: '<i class="fas fa-leaf text-green-400"></i>',
+                staple: '<i class="fas fa-bowl-rice text-amber-400"></i>',
+                soup: '<i class="fas fa-mug-hot text-purple-400"></i>'
+            };
+            
+            addedRecipes.push({name, type});
+            showToast(`${name} 已添加`);
+            
+            // 清空搜索框
+            document.getElementById('recipeSearch').value = '';
+        }
+        
+        // 添加自定义菜谱
+        function addCustomRecipe() {
+            const name = document.getElementById('customRecipe').value.trim();
+            if (!name) {
+                showToast('请输入菜品名称');
+                return;
+            }
+            
+            // 自定义菜品标记为需要AI拆解
+            selectRecipe(name + ' 🔥', currentCategory);
+            document.getElementById('customRecipe').value = '';
+            showToast(`${name} 已添加（将自动拆解食材）`);
+        }
+        
+        // 显示创建弹窗
+        function showCreateRecipeModal() {
+            document.getElementById('createModal').classList.remove('hidden');
+            document.getElementById('createModal').classList.add('flex');
+        }
+        
+        // 隐藏创建弹窗
+        function hideCreateModal() {
+            document.getElementById('createModal').classList.add('hidden');
+            document.getElementById('createModal').classList.remove('flex');
+        }
+        
+        // 创建菜品
+        function createRecipe() {
+const name = document.getElementById('newRecipeName').value.trim();
+            const ingredients = document.getElementById('newRecipeIngredients').value.trim();
+            
+            if (!name) {
+                showToast('请输入菜品名称');
+                return;
+            }
+            
+            if (!ingredients) {
+                showToast('请输入主要食材');
+                return;
+            }
+            
+            // 这里可以保存到本地存储或发送到后端
+            showToast(`${name} 创建成功！`);
+            hideCreateModal();
+            
+            // 清空表单
+            document.getElementById('newRecipeName').value = '';
+            document.getElementById('newRecipeIngredients').value = '';
+            document.getElementById('newRecipePrice').value = '';
+        }
+        
+        // Toast提示
+        function showToast(text) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastText').textContent = text;
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 2000);
+        }
+        
+        // 搜索功能
+        document.getElementById('recipeSearch').addEventListener('input', function(e) {
+            const query = e.target.value.toLowerCase();
+            if (query.length > 0) {
+                // 显示搜索结果或自定义输入提示
+                document.querySelectorAll('.recipe-group').forEach(group => {
+                    group.classList.add('hidden');
+                });
+            }
+        });
+    </script>
+</body>
+</html>

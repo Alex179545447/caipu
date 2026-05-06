@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的菜谱</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>tailwind.config = { theme: { extend: { colors: { brand: '#10B981', accent: '#F59E0B' } } } }</script>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif; }
+        .screen { height: 100vh; overflow-y: auto; }
+        .screen::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="bg-slate-50">
+    <div class="screen">
+        <div class="bg-white px-6 pt-3 pb-2 flex justify-between items-center text-xs">
+            <span class="font-medium">9:41</span>
+            <div class="flex gap-1"><i class="fas fa-signal"></i><i class="fas fa-wifi"></i><i class="fas fa-battery-full"></i></div>
+        </div>
+        <div class="bg-white px-4 py-3 flex items-center justify-between border-b border-gray-100">
+            <a href="home.html" class="text-gray-600"><i class="fas fa-chevron-left text-lg"></i></a>
+            <h1 class="font-semibold text-gray-900">我的菜谱</h1>
+            <a href="#" class="text-emerald-600"><i class="fas fa-plus text-lg"></i></a>
+        </div>
+        
+        <!-- 搜索栏 -->
+        <div class="px-4 py-3">
+            <div class="bg-white rounded-2xl px-4 py-3 flex items-center gap-3 shadow-sm">
+                <i class="fas fa-search text-gray-400"></i>
+                <input type="text" placeholder="搜索菜谱..." class="flex-1 outline-none text-sm">
+            </div>
+        </div>
+        
+        <!-- 分类标签 -->
+        <div class="px-4 pb-3">
+            <div class="flex gap-2 overflow-x-auto">
+                <button class="px-4 py-2 bg-emerald-500 text-white rounded-full text-sm whitespace-nowrap">全部</button>
+                <button class="px-4 py-2 bg-gray-100 text-gray-600 rounded-full text-sm whitespace-nowrap">荤菜</button>
+                <button class="px-4 py-2 bg-gray-100 text-gray-600 rounded-full text-sm whitespace-nowrap">素菜</button>
+                <button class="px-4 py-2 bg-gray-100 text-gray-600 rounded-full text-sm whitespace-nowrap">主食</button>
+                <button class="px-4 py-2 bg-gray-100 text-gray-600 rounded-full text-sm whitespace-nowrap">快手</button>
+            </div>
+        </div>
+        
+        <!-- 菜谱列表 -->
+        <div class="px-4 pb-24 space-y-4">
+            <!-- 荤菜区 -->
+            <div>
+                <h3 class="text-sm font-semibold text-gray-500 mb-3">荤菜 (12)</h3>
+                <div class="space-y-3">
+                    <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex gap-4">
+                        <img src="https://images.unsplash.com/photo-1598103442097-8b74394b95c6?w=200&h=200&fit=crop" class="w-20 h-20 rounded-xl object-cover">
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-gray-900">小炒鸡腿肉</h4>
+                            <p class="text-xs text-gray-500 mt-1">鸡腿肉 · 简单 · 约15分钟</p>
+                            <div class="flex gap-2 mt-2">
+                                <span class="bg-emerald-50 text-emerald-600 text-xs px-2 py-0.5 rounded">快手</span>
+                                <span class="bg-amber-50 text-amber-600 text-xs px-2 py-0.5 rounded">下饭</span>
+                            </div>
+                        </div>
+<button class="text-gray-400"><i class="fas fa-ellipsis-v"></i></button>
+                    </div>
+                    
+                    <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex gap-4">
+                        <img src="https://images.unsplash.com/photo-1603360946369-dc9bb6258143?w=200&h=200&fit=crop" class="w-20 h-20 rounded-xl object-cover">
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-gray-900">青椒炒牛肉</h4>
+                            <p class="text-xs text-gray-500 mt-1">牛肉 · 简单 · 约20分钟</p>
+                            <div class="flex gap-2 mt-2">
+                                <span class="bg-emerald-50 text-emerald-600 text-xs px-2 py-0.5 rounded">快手</span>
+                                <span class="bg-red-50 text-red-600 text-xs px-2 py-0.5 rounded">微辣</span>
+                            </div>
+                        </div>
+                        <button class="text-gray-400"><i class="fas fa-ellipsis-v"></i></button>
+                    </div>
+                    
+                    <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex gap-4">
+                        <img src="https://images.unsplash.com/photo-1512058564366-18510be2db19?w=200&h=200&fit=crop" class="w-20 h-20 rounded-xl object-cover">
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-gray-900">鱼香肉丝</h4>
+                            <p class="text-xs text-gray-500 mt-1">猪肉 · 中等 · 约25分钟</p>
+                            <div class="flex gap-2 mt-2">
+                                <span class="bg-red-50 text-red-600 text-xs px-2 py-0.5 rounded">下饭</span>
+                            </div>
+                        </div>
+                        <button class="text-gray-400"><i class="fas fa-ellipsis-v"></i></button>
+                    </div>
+                    
+                    <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex gap-4">
+                        <img src="https://images.unsplash.com/photo-1617093727343-374698b1b08d?w=200&h=200&fit=crop" class="w-20 h-20 rounded-xl object-cover">
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-gray-900">照烧肥牛</h4>
+                            <p class="text-xs text-gray-500 mt-1">牛肉 · 简单 · 约10分钟</p>
+                            <div class="flex gap-2 mt-2">
+                                <span class="bg-amber-50 text-amber-600 text-xs px-2 py-0.5 rounded">省时</span>
+                            </div>
+                        </div>
+                        <button class="text-gray-400"><i class="fas fa-ellipsis-v"></i></button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 素菜区 -->
+            <div>
+                <h3 class="text-sm font-semibold text-gray-500 mb-3">素菜 (10)</h3>
+                <div class="space-y-3">
+                    <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex gap-4">
+                        <img src="https://images.unsplash.com/photo-1540420773420-3366772f4999?w=200&h=200&fit=crop" class="w-20 h-20 rounded-xl object-cover">
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-gray-900">蒜蓉西蓝花</h4>
+                            <p class="text-xs text-gray-500 mt-1">蔬菜 · 简单 · 约10分钟</p>
+                            <div class="flex gap-2 mt-2">
+                                <span class="bg-emerald-50 text-emerald-600 text-xs px-2 py-0.5 rounded">健康</span>
+                                <span class="bg-green-50 text-green-600 text-xs px-2 py-0.5 rounded">清淡</span>
+                            </div>
+                        </div>
+                        <button class="text-gray-400"><i class="fas fa-ellipsis-v"></i></button>
+                    </div>
+                    
+                    <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex gap-4">
+                        <img src="https://images.unsplash.com/photo-1518012312832-96aea3c91144?w=200&h=200&fit=crop" class="w-20 h-20 rounded-xl object-cover">
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-gray-900">醋溜土豆丝</h4>
+                            <p class="text-xs text-gray-500 mt-1">蔬菜 · 简单 · 约15分钟</p>
+                            <div class="flex gap-2 mt-2">
+                                <span class="bg-red-50 text-red-600 text-xs px-2 py-0.5 rounded">酸辣</span>
+                            </div>
+                        </div>
+                        <button class="text-gray-400"><i class="fas fa-ellipsis-v"></i></button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 主食区 -->
+            <div>
+                <h3 class="text-sm font-semibold text-gray-500 mb-3">主食 (6)</h3>
+                <div class="space-y-3">
+                    <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex gap-4">
+                        <div class="w-20 h-20 rounded-xl bg-amber-100 flex items-center justify-center">
+                            <i class="fas fa-bowl-rice text-amber-500 text-2xl"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-gray-900">米饭</h4>
+                            <p class="text-xs text-gray-500 mt-1">主食 · 简单 · 约30分钟</p>
+                            <div class="flex gap-2 mt-2">
+                                <span class="bg-amber-50 text-amber-600 text-xs px-2 py-0.5 rounded">基础</span>
+                            </div>
+                        </div>
+                        <button class="text-gray-400"><i class="fas fa-ellipsis-v"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 底部导航 -->
+        <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 px-6 py-3 flex justify-between items-center" style="max-width: 375px; margin: 0 auto;">
+            <a href="home.html" class="flex flex-col items-center text-gray-400">
+                <i class="fas fa-home text-lg"></i>
+                <span class="text-xs mt-1">首页</span>
+            </a>
+            <a href="menu-preview.html" class="flex flex-col items-center text-gray-400">
+                <i class="fas fa-calendar-week text-lg"></i>
+                <span class="text-xs mt-1">菜单</span>
+            </a>
+            <a href="plan-setup.html" class="flex flex-col items-center text-gray-400">
+                <i class="fas fa-plus-circle text-lg"></i>
+                <span class="text-xs mt-1">规划</span>
+            </a>
+            <a href="recipes.html" class="flex flex-col items-center text-emerald-600">
+                <i class="fas fa-utensils text-lg"></i>
+                <span class="text-xs mt-1">菜谱</span>
+            </a>
+            <a href="#" class="flex flex-col items-center text-gray-400">
+                <i class="fas fa-cog text-lg"></i>
+                <span class="text-xs mt-1">设置</span>
+            </a>
+        </div>
+    </div>
+</body>
+</html>
