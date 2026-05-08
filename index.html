@@ -2,8 +2,8 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>家庭菜谱规划 v3.0</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>家庭菜谱规划</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdn.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
@@ -19,60 +19,789 @@
         }
     </script>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif; }
-        .phone-frame {
-            width: 375px;
-            height: 812px;
-            border-radius: 40px;
-            box-shadow: 0 0 0 12px #1F2937, 0 0 0 14px #374151;
-            overflow: hidden;
-            background: #fff;
-        }
-        .screen {
-            width: 100%;
-            height: 100%;
-            overflow-y: auto;
-            overflow-x: hidden;
-        }
+        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif; background: #f8fafc; }
+        .page { display: none; }
+        .page.active { display: block; }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid #e5e7eb; padding: 8px 0; padding-bottom: env(safe-area-inset-bottom, 8px); z-index: 100; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; padding: 6px 12px; color: #9ca3af; transition: all 0.2s; }
+        .nav-item.active { color: #10B981; }
+        .nav-item i { font-size: 20px; margin-bottom: 2px; }
+        .nav-item span { font-size: 10px; }
+        .screen { height: calc(100vh - 70px - env(safe-area-inset-bottom, 0px)); overflow-y: auto; padding-bottom: 20px; }
         .screen::-webkit-scrollbar { display: none; }
-        .active\:scale-95:active { transform: scale(0.95); }
+        .card { background: white; border-radius: 16px; padding: 16px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .btn-primary { background: linear-gradient(135deg, #10B981, #059669); color: white; padding: 14px 24px; border-radius: 12px; font-weight: 600; width: 100%; transition: all 0.3s; }
+        .btn-primary:active { transform: scale(0.98); }
+        .btn-secondary { background: #f3f4f6; color: #374151; padding: 12px 20px; border-radius: 12px; font-weight: 500; }
+        .category-btn { padding: 8px 16px; border-radius: 20px; font-size: 14px; transition: all 0.2s; background: #f3f4f6; color: #6b7280; }
+        .category-btn.active { background: #10B981; color: white; }
+        .ingredient-item { display: flex; align-items: center; padding: 12px; background: #f9fafb; border-radius: 12px; margin-bottom: 8px; }
+        .ingredient-item input[type="checkbox"] { width: 20px; height: 20px; margin-right: 12px; accent-color: #10B981; }
+        .progress-bar { height: 6px; background: #e5e7eb; border-radius: 3px; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #10B981, #34d399); transition: width 0.3s; }
+        .day-card { background: white; border-radius: 16px; padding: 16px; margin-bottom: 12px; border-left: 4px solid #10B981; }
+        .toast { position: fixed; top: 60px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); color: white; padding: 12px 24px; border-radius: 8px; z-index: 1000; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateX(-50%) translateY(-20px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+        .step-indicator { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 16px; }
+        .step { width: 10px; height: 10px; border-radius: 50%; background: #d1d5db; transition: all 0.3s; }
+        .step.active { background: #10B981; transform: scale(1.2); }
+        .step.done { background: #10B981; }
+        .step-line { width: 40px; height: 2px; background: #d1d5db; }
+        .step-line.done { background: #10B981; }
+        input, textarea, select { border: 1px solid #e5e7eb; border-radius: 12px; padding: 12px; width: 100%; font-size: 16px; }
+        input:focus, textarea:focus, select:focus { outline: none; border-color: #10B981; }
     </style>
 </head>
-<body class="bg-gradient-to-br from-slate-900 to-slate-800 min-h-screen">
-    <div class="max-w-full px-4 py-8">
-        <h1 class="text-white text-3xl font-bold text-center mb-2">家庭菜谱规划工具</h1>
-        <p class="text-gray-400 text-center mb-8">v3.0 新版 · 支持自定义菜谱 · AI自动拆解 · 导出Word</p>
+<body>
+    <div id="app" style="max-width: 430px; margin: 0 auto; min-height: 100vh; background: #f8fafc;">
         
-        <div class="flex gap-6 flex-wrap justify-center">
-            <!-- 首页 -->
-            <div class="phone-frame">
-                <iframe src="pages/home.html" class="w-full h-full border-0" title="首页"></iframe>
-            </div>
-            <!-- 智能规划 -->
-            <div class="phone-frame">
-                <iframe src="pages/smart-plan.html" class="w-full h-full border-0" title="智能规划"></iframe>
-            </div>
-            <!-- 手动添加 -->
-            <div class="phone-frame">
-                <iframe src="pages/manual-add.html" class="w-full h-full border-0" title="手动添加"></iframe>
-            </div>
-            <!-- 采购清单 -->
-            <div class="phone-frame">
-                <iframe src="pages/shop-list.html" class="w-full h-full border-0" title="采购清单"></iframe>
-            </div>
-            <!-- 口味偏好 -->
-            <div class="phone-frame">
-                <iframe src="pages/preference.html" class="w-full h-full border-0" title="口味偏好"></iframe>
-            </div>
-            <!-- 菜谱详情 -->
-            <div class="phone-frame">
-                <iframe src="pages/recipe-detail.html" class="w-full h-full border-0" title="菜谱详情"></iframe>
+        <!-- 顶部标题栏 -->
+        <div class="bg-white px-4 py-3 flex items-center justify-center">
+            <h1 class="text-lg font-bold text-gray-800">家庭菜谱规划</h1>
+        </div>
+
+        <!-- ==================== 首页 ==================== -->
+        <div id="pageHome" class="page screen">
+            <div class="p-4">
+                <div class="text-center mb-6">
+                    <div class="w-20 h-20 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-3xl mx-auto mb-4 flex items-center justify-center shadow-lg">
+                        <i class="fas fa-utensils text-white text-3xl"></i>
+                    </div>
+                    <h1 class="text-2xl font-bold text-gray-800">家庭菜谱规划</h1>
+                    <p class="text-gray-500 mt-1">自定义菜谱 → 智能拆解 → 采购清单</p>
+                </div>
+
+                <!-- 步骤指引 -->
+                <div class="card mb-4">
+                    <p class="text-sm text-gray-500 mb-3 text-center">使用流程</p>
+                    <div class="flex items-center justify-between">
+                        <div class="text-center flex-1">
+                            <div class="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-1">
+                                <i class="fas fa-edit text-emerald-600"></i>
+                            </div>
+                            <p class="text-xs text-gray-600">自定义菜谱</p>
+                        </div>
+                        <div class="w-8 h-0.5 bg-emerald-300"></div>
+                        <div class="text-center flex-1">
+                            <div class="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-1">
+                                <i class="fas fa-magic text-emerald-600"></i>
+                            </div>
+                            <p class="text-xs text-gray-600">智能拆解</p>
+                        </div>
+                        <div class="w-8 h-0.5 bg-emerald-300"></div>
+                        <div class="text-center flex-1">
+                            <div class="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-1">
+                                <i class="fas fa-shopping-basket text-emerald-600"></i>
+                            </div>
+                            <p class="text-xs text-gray-600">采购清单</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 统计 -->
+                <div class="grid grid-cols-3 gap-3 mb-4">
+                    <div class="card text-center py-3">
+                        <p class="text-2xl font-bold text-emerald-600" id="homeMeals">0</p>
+                        <p class="text-xs text-gray-500">已选菜谱</p>
+                    </div>
+                    <div class="card text-center py-3">
+                        <p class="text-2xl font-bold text-amber-600" id="homeIngredients">0</p>
+                        <p class="text-xs text-gray-500">食材数量</p>
+                    </div>
+                    <div class="card text-center py-3">
+                        <p class="text-2xl font-bold text-blue-600" id="homeBudget">¥0</p>
+                        <p class="text-xs text-gray-500">预估预算</p>
+                    </div>
+                </div>
+
+                <button class="btn-primary mb-3" onclick="showPage('custom')">
+                    <i class="fas fa-plus mr-2"></i>开始自定义菜谱
+                </button>
+                
+                <button class="w-full py-3 bg-gray-100 text-gray-700 rounded-xl font-medium mb-4" onclick="showPage('list')">
+                    <i class="fas fa-list mr-2"></i>查看采购清单
+                </button>
+
+                <!-- 已有菜谱预览 -->
+                <div id="homeMealPreview" class="hidden">
+                    <h3 class="font-bold text-gray-800 mb-3">本周菜谱</h3>
+                    <div id="homeMealList"></div>
+                </div>
             </div>
         </div>
-        
-        <div class="mt-8 text-center">
-            <p class="text-emerald-400 text-sm">✅ 已修复Tab切换 | ✅ 支持自定义菜名 | ✅ AI拆解食材 | ✅ 导出Word | ✅ 一周/半月/月生成</p>
+
+        <!-- ==================== 自定义菜谱页面 ==================== -->
+        <div id="pageCustom" class="page screen">
+            <div class="p-4">
+                <div class="flex items-center mb-4">
+                    <button onclick="showPage('home')" class="mr-3 text-gray-600">
+                        <i class="fas fa-arrow-left text-lg"></i>
+                    </button>
+                    <h2 class="text-xl font-bold text-gray-800">自定义一周菜谱</h2>
+                </div>
+
+                <!-- 步骤指示器 -->
+                <div class="step-indicator mb-4">
+                    <div class="step active" id="step1"></div>
+                    <div class="step-line" id="line1"></div>
+                    <div class="step" id="step2"></div>
+                    <div class="step-line" id="line2"></div>
+                    <div class="step" id="step3"></div>
+                </div>
+
+                <!-- 周一 -->
+                <div class="day-card">
+                    <div class="flex items-center mb-3">
+                        <span class="w-8 h-8 bg-emerald-500 text-white rounded-lg flex items-center justify-center font-bold mr-3">一</span>
+                        <span class="font-semibold">周一</span>
+                    </div>
+                    <div class="space-y-3">
+                        <div>
+                            <label class="text-xs text-gray-500 mb-1 block">荤菜</label>
+                            <input type="text" id="mon_meat" placeholder="例如：红烧排骨" class="text-sm" oninput="updateMealSelection()">
+                        </div>
+                        <div>
+                            <label class="text-xs text-gray-500 mb-1 block">素菜</label>
+                            <input type="text" id="mon_veg" placeholder="例如：蒜蓉西蓝花" class="text-sm" oninput="updateMealSelection()">
+                        </div>
+                        <div>
+                            <label class="text-xs text-gray-500 mb-1 block">主食</label>
+                            <input type="text" id="mon_staple" placeholder="例如：米饭" class="text-sm" value="米饭" oninput="updateMealSelection()">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 周二 -->
+                <div class="day-card">
+                    <div class="flex items-center mb-3">
+                        <span class="w-8 h-8 bg-emerald-500 text-white rounded-lg flex items-center justify-center font-bold mr-3">二</span>
+                        <span class="font-semibold">周二</span>
+                    </div>
+                    <div class="space-y-3">
+                        <div>
+                            <label class="text-xs text-gray-500 mb-1 block">荤菜</label>
+                            <input type="text" id="tue_meat" placeholder="例如：青椒炒牛肉" class="text-sm" oninput="updateMealSelection()">
+                        </div>
+                        <div>
+                            <label class="text-xs text-gray-500 mb-1 block">素菜</label>
+                            <input type="text" id="tue_veg" placeholder="例如：醋溜土豆丝" class="text-sm" oninput="updateMealSelection()">
+                        </div>
+                        <div>
+                            <label class="text-xs text-gray-500 mb-1 block">主食</label>
+                            <input type="text" id="tue_staple" placeholder="例如：米饭" class="text-sm" value="米饭" oninput="updateMealSelection()">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 周三 -->
+                <div class="day-card">
+                    <div class="flex items-center mb-3">
+                        <span class="w-8 h-8 bg-emerald-500 text-white rounded-lg flex items-center justify-center font-bold mr-3">三</span>
+                        <span class="font-semibold">周三</span>
+                    </div>
+                    <div class="space-y-3">
+                        <div>
+                            <label class="text-xs text-gray-500 mb-1 block">荤菜</label>
+                            <input type="text" id="wed_meat" placeholder="例如：鸡蛋西红柿" class="text-sm" oninput="updateMealSelection()">
+                        </div>
+                        <div>
+                            <label class="text-xs text-gray-500 mb-1 block">素菜</label>
+                            <input type="text" id="wed_veg" placeholder="例如：炝炒圆白菜" class="text-sm" oninput="updateMealSelection()">
+                        </div>
+                        <div>
+                            <label class="text-xs text-gray-500 mb-1 block">主食</label>
+                            <input type="text" id="wed_staple" placeholder="例如：米饭" class="text-sm" value="米饭" oninput="updateMealSelection()">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 周四 -->
+                <div class="day-card">
+                    <div class="flex items-center mb-3">
+                        <span class="w-8 h-8 bg-emerald-500 text-white rounded-lg flex items-center justify-center font-bold mr-3">四</span>
+                        <span class="font-semibold">周四</span>
+                    </div>
+                    <div class="space-y-3">
+                        <div>
+                            <label class="text-xs text-gray-500 mb-1 block">荤菜</label>
+                            <input type="text" id="thu_meat" placeholder="例如：鱼香肉丝" class="text-sm" oninput="updateMealSelection()">
+                        </div>
+                        <div>
+                            <label class="text-xs text-gray-500 mb-1 block">素菜</label>
+                            <input type="text" id="thu_veg" placeholder="例如：蒜蓉蒿子杆" class="text-sm" oninput="updateMealSelection()">
+                        </div>
+                        <div>
+                            <label class="text-xs text-gray-500 mb-1 block">主食</label>
+                            <input type="text" id="thu_staple" placeholder="例如：米饭" class="text-sm" value="米饭" oninput="updateMealSelection()">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 周五 -->
+                <div class="day-card">
+                    <div class="flex items-center mb-3">
+                        <span class="w-8 h-8 bg-amber-500 text-white rounded-lg flex items-center justify-center font-bold mr-3">五</span>
+                        <span class="font-semibold">周五（快捷日）</span>
+                    </div>
+                    <div class="space-y-3">
+                        <div>
+                            <label class="text-xs text-gray-500 mb-1 block">荤菜</label>
+                            <input type="text" id="fri_meat" placeholder="例如：照烧肥牛" class="text-sm" oninput="updateMealSelection()">
+                        </div>
+                        <div>
+                            <label class="text-xs text-gray-500 mb-1 block">素菜</label>
+                            <input type="text" id="fri_veg" placeholder="例如：白灼菜心" class="text-sm" oninput="updateMealSelection()">
+                        </div>
+                        <div>
+                            <label class="text-xs text-gray-500 mb-1 block">主食</label>
+                            <input type="text" id="fri_staple" placeholder="例如：米饭" class="text-sm" value="米饭" oninput="updateMealSelection()">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 周六 -->
+                <div class="day-card" style="border-left-color: #f59e0b;">
+                    <div class="flex items-center mb-3">
+                        <span class="w-8 h-8 bg-amber-500 text-white rounded-lg flex items-center justify-center font-bold mr-3">六</span>
+                        <span class="font-semibold">周六（可复杂）</span>
+                    </div>
+                    <div class="space-y-3">
+                        <div>
+                            <label class="text-xs text-gray-500 mb-1 block">荤菜</label>
+                            <input type="text" id="sat_meat" placeholder="例如：黄焖鸡" class="text-sm" oninput="updateMealSelection()">
+                        </div>
+                        <div>
+                            <label class="text-xs text-gray-500 mb-1 block">素菜</label>
+                            <input type="text" id="sat_veg" placeholder="例如：干锅土豆片" class="text-sm" oninput="updateMealSelection()">
+                        </div>
+                        <div>
+                            <label class="text-xs text-gray-500 mb-1 block">主食</label>
+                            <input type="text" id="sat_staple" placeholder="例如：米饭" class="text-sm" value="米饭" oninput="updateMealSelection()">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 周日 -->
+                <div class="day-card" style="border-left-color: #f59e0b;">
+                    <div class="flex items-center mb-3">
+                        <span class="w-8 h-8 bg-amber-500 text-white rounded-lg flex items-center justify-center font-bold mr-3">日</span>
+                        <span class="font-semibold">周日（可复杂）</span>
+                    </div>
+                    <div class="space-y-3">
+                        <div>
+                            <label class="text-xs text-gray-500 mb-1 block">荤菜</label>
+                            <input type="text" id="sun_meat" placeholder="例如：清蒸鱼" class="text-sm" oninput="updateMealSelection()">
+                        </div>
+                        <div>
+                            <label class="text-xs text-gray-500 mb-1 block">素菜</label>
+                            <input type="text" id="sun_veg" placeholder="例如：香菇油菜" class="text-sm" oninput="updateMealSelection()">
+                        </div>
+                        <div>
+                            <label class="text-xs text-gray-500 mb-1 block">主食</label>
+                            <input type="text" id="sun_staple" placeholder="例如：米饭" class="text-sm" value="米饭" oninput="updateMealSelection()">
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn-primary mt-4" onclick="generateShoppingList()">
+                    <i class="fas fa-magic mr-2"></i>智能拆解食材 & 生成采购清单
+                </button>
+            </div>
         </div>
+
+        <!-- ==================== 采购清单页面 ==================== -->
+        <div id="pageList" class="page screen">
+            <div class="p-4">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center">
+                        <button onclick="showPage('home')" class="mr-3 text-gray-600">
+                            <i class="fas fa-arrow-left text-lg"></i>
+                        </button>
+                        <h2 class="text-xl font-bold text-gray-800">采购清单</h2>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="showMealPlan()" class="text-emerald-600 text-sm">
+                            <i class="fas fa-calendar-alt mr-1"></i>菜谱
+                        </button>
+                        <button onclick="exportList()" class="text-emerald-600">
+                            <i class="fas fa-file-export"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 进度 -->
+                <div class="card">
+                    <div class="flex justify-between mb-2">
+                        <span class="text-sm text-gray-600">采购进度</span>
+                        <span class="text-sm font-bold text-emerald-600" id="progressText">0/0</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                    </div>
+                    <div class="flex justify-between mt-2 text-xs text-gray-500">
+                        <span id="totalItems">0件食材</span>
+                        <span id="totalBudget">¥0</span>
+                    </div>
+                </div>
+
+                <!-- 采购列表 -->
+                <div id="shoppingList"></div>
+
+                <!-- 底部操作 -->
+                <div class="flex gap-3 mt-4 mb-4">
+                    <button onclick="resetList()" class="flex-1 py-3 bg-gray-100 text-gray-700 rounded-xl font-medium">
+                        <i class="fas fa-redo mr-2"></i>重置
+                    </button>
+                    <button onclick="completeShopping()" class="flex-1 py-3 bg-emerald-500 text-white rounded-xl font-medium">
+                        <i class="fas fa-check mr-2"></i>完成
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== 菜谱预览弹窗 ==================== -->
+        <div id="mealPlanModal" class="fixed inset-0 bg-black/50 hidden z-50 flex items-end">
+            <div class="bg-white w-full max-w-md mx-auto rounded-t-3xl p-4 max-h-[80vh] overflow-y-auto">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-bold">本周菜谱</h3>
+                    <button onclick="closeMealPlan()" class="text-gray-400">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                <div id="mealPlanContent"></div>
+            </div>
+        </div>
+
+        <!-- 底部导航 -->
+        <nav class="bottom-nav">
+            <div class="flex justify-around">
+                <a href="#" onclick="showPage('home')" class="nav-item active" id="nav-home">
+                    <i class="fas fa-home"></i>
+                    <span>首页</span>
+                </a>
+                <a href="#" onclick="showPage('custom')" class="nav-item" id="nav-custom">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>自定义</span>
+                </a>
+                <a href="#" onclick="showPage('list')" class="nav-item" id="nav-list">
+                    <i class="fas fa-shopping-basket"></i>
+                    <span>采购</span>
+                </a>
+            </div>
+        </nav>
     </div>
+
+    <script>
+        // ====== 全局数据 ======
+        let weeklyMeals = {
+            mon: { meat: '', veg: '', staple: '米饭' },
+            tue: { meat: '', veg: '', staple: '米饭' },
+            wed: { meat: '', veg: '', staple: '米饭' },
+            thu: { meat: '', veg: '', staple: '米饭' },
+            fri: { meat: '', veg: '', staple: '米饭' },
+            sat: { meat: '', veg: '', staple: '米饭' },
+            sun: { meat: '', veg: '', staple: '米饭' }
+        };
+
+        let shoppingList = [];
+        let checkedItems = new Set();
+
+        // ====== 菜谱数据库（智能拆解） ======
+        const recipeDatabase = {
+            '红烧排骨': { type: 'meat', ingredients: [{name: '排骨', qty: '500g', price: 35}, {name: '冰糖', qty: '30g', price: 3}, {name: '生抽', qty: '适量', price: 2}], cuisine: '家常' },
+            '小炒鸡腿肉': { type: 'meat', ingredients: [{name: '鸡腿肉', qty: '300g', price: 15}, {name: '青椒', qty: '50g', price: 2}, {name: '葱姜蒜', qty: '适量', price: 2}], cuisine: '家常' },
+            '青椒炒牛肉': { type: 'meat', ingredients: [{name: '牛肉片', qty: '300g', price: 35}, {name: '青椒', qty: '150g', price: 4}, {name: '酱油', qty: '适量', price: 2}], cuisine: '家常' },
+            '鱼香肉丝': { type: 'meat', ingredients: [{name: '猪里脊', qty: '300g', price: 20}, {name: '木耳', qty: '50g', price: 3}, {name: '胡萝卜', qty: '100g', price: 3}, {name: '豆瓣酱', qty: '适量', price: 3}], cuisine: '川菜' },
+            '照烧肥牛': { type: 'meat', ingredients: [{name: '肥牛片', qty: '300g', price: 25}, {name: '照烧酱', qty: '适量', price: 5}], cuisine: '日式' },
+            '黄焖鸡': { type: 'meat', ingredients: [{name: '鸡腿肉', qty: '400g', price: 20}, {name: '土豆', qty: '200g', price: 3}, {name: '香菇', qty: '100g', price: 8}], cuisine: '家常' },
+            '清蒸鱼': { type: 'meat', ingredients: [{name: '鲜鱼', qty: '600g', price: 35}, {name: '葱姜', qty: '适量', price: 2}, {name: '蒸鱼豉油', qty: '适量', price: 5}], cuisine: '家常' },
+            '鸡蛋西红柿': { type: 'meat', ingredients: [{name: '鸡蛋', qty: '3个', price: 4}, {name: '西红柿', qty: '300g', price: 5}], cuisine: '家常' },
+            '宫保鸡丁': { type: 'meat', ingredients: [{name: '鸡胸肉', qty: '300g', price: 12}, {name: '花生', qty: '50g', price: 5}, {name: '干辣椒', qty: '适量', price: 2}], cuisine: '川菜' },
+            '蒜蓉西蓝花': { type: 'veg', ingredients: [{name: '西蓝花', qty: '400g', price: 8}, {name: '蒜末', qty: '适量', price: 1}], cuisine: '家常' },
+            '醋溜土豆丝': { type: 'veg', ingredients: [{name: '土豆', qty: '300g', price: 4}, {name: '醋', qty: '适量', price: 1}], cuisine: '家常' },
+            '炝炒圆白菜': { type: 'veg', ingredients: [{name: '圆白菜', qty: '400g', price: 4}, {name: '干辣椒', qty: '适量', price: 1}], cuisine: '家常' },
+            '蒜蓉蒿子杆': { type: 'veg', ingredients: [{name: '蒿子杆', qty: '300g', price: 6}, {name: '蒜末', qty: '适量', price: 1}], cuisine: '家常' },
+            '白灼菜心': { type: 'veg', ingredients: [{name: '菜心', qty: '300g', price: 5}, {name: '蚝油', qty: '适量', price: 3}], cuisine: '粤菜' },
+            '干锅土豆片': { type: 'veg', ingredients: [{name: '土豆', qty: '400g', price: 5}, {name: '五花肉', qty: '100g', price: 10}, {name: '洋葱', qty: '100g', price: 3}], cuisine: '川菜' },
+            '香菇油菜': { type: 'veg', ingredients: [{name: '香菇', qty: '150g', price: 8}, {name: '油菜', qty: '300g', price: 4}], cuisine: '家常' },
+            '麻婆豆腐': { type: 'veg', ingredients: [{name: '豆腐', qty: '1块', price: 3}, {name: '肉末', qty: '100g', price: 8}, {name: '豆瓣酱', qty: '适量', price: 3}], cuisine: '川菜' },
+            '米饭': { type: 'staple', ingredients: [{name: '大米', qty: '300g', price: 5}], cuisine: '主食' },
+            '面条': { type: 'staple', ingredients: [{name: '面条', qty: '300g', price: 5}], cuisine: '主食' },
+            '炸酱面': { type: 'staple', ingredients: [{name: '面条', qty: '300g', price: 5}, {name: '炸酱', qty: '100g', price: 8}], cuisine: '家常' },
+        };
+
+        // 默认食材库
+        const defaultIngredients = {
+           肉类: [
+                {name: '鸡腿肉', qty: '300-500g', price: 15, unit: '斤'},
+                {name: '牛肉片', qty: '300g', price: 35, unit: '盒'},
+                {name: '猪里脊', qty: '300g', price: 20, unit: '斤'},
+                {name: '肥牛片', qty: '300g', price: 25, unit: '盒'},
+                {name: '排骨', qty: '500g', price: 35, unit: '斤'},
+                {name: '鲜鱼', qty: '约600g', price: 35, unit: '条'},
+                {name: '虾仁', qty: '200g', price: 25, unit: '袋'},
+                {name: '鸡蛋', qty: '10个', price: 12, unit: '盒'},
+            ],
+           蔬菜: [
+                {name: '西蓝花', qty: '400g', price: 8, unit: '颗'},
+                {name: '土豆', qty: '500g', price: 5, unit: '斤'},
+                {name: '青椒', qty: '200g', price: 4, unit: '个'},
+                {name: '油菜', qty: '300g', price: 4, unit: '把'},
+                {name: '香菇', qty: '150g', price: 8, unit: '袋'},
+                {name: '圆白菜', qty: '400g', price: 4, unit: '个'},
+                {name: '菜心', qty: '300g', price: 5, unit: '把'},
+                {name: '西红柿', qty: '400g', price: 6, unit: '斤'},
+                {name: '胡萝卜', qty: '200g', price: 3, unit: '根'},
+                {name: '蒿子杆', qty: '300g', price: 6, unit: '把'},
+            ],
+           调料: [
+                {name: '葱姜蒜', qty: '适量', price: 8, unit: '份'},
+                {name: '酱油', qty: '1瓶', price: 8, unit: '瓶'},
+                {name: '醋', qty: '1瓶', price: 6, unit: '瓶'},
+                {name: '盐', qty: '1袋', price: 3, unit: '袋'},
+                {name: '食用油', qty: '1桶', price: 20, unit: '桶'},
+            ],
+           主食: [
+                {name: '大米', qty: '2kg', price: 15, unit: '袋'},
+                {name: '面条', qty: '500g', price: 8, unit: '把'},
+                {name: '面粉', qty: '1kg', price: 10, unit: '袋'},
+            ]
+        };
+
+        // ====== 页面导航 ======
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById('page' + pageId.charAt(0).toUpperCase() + pageId.slice(1)).classList.add('active');
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            const navId = 'nav-' + (pageId === 'Custom' ? 'custom' : pageId.toLowerCase());
+            document.getElementById(navId)?.classList.add('active');
+            window.scrollTo(0, 0);
+            
+            // 更新首页统计
+            if (pageId === 'home') {
+                updateHomeStats();
+            }
+        }
+
+        // ====== Toast提示 ======
+        function showToast(message) {
+            const existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 2000);
+        }
+
+        // ====== 更新菜谱选择 ======
+        function updateMealSelection() {
+            const days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+            days.forEach(day => {
+                weeklyMeals[day] = {
+                    meat: document.getElementById(day + '_meat')?.value || '',
+                    veg: document.getElementById(day + '_veg')?.value || '',
+                    staple: document.getElementById(day + '_staple')?.value || '米饭'
+                };
+            });
+            updateHomeStats();
+        }
+
+        // ====== 更新首页统计 ======
+        function updateHomeStats() {
+            let mealCount = 0;
+            let totalBudget = 0;
+            
+            Object.values(weeklyMeals).forEach(day => {
+                if (day.meat) mealCount++;
+                if (day.veg) mealCount++;
+            });
+            
+            document.getElementById('homeMeals').textContent = mealCount;
+            
+            // 简单估算预算
+            if (mealCount > 0) {
+                totalBudget = mealCount * 25; // 每道菜约25元
+            }
+            
+            document.getElementById('homeIngredients').textContent = shoppingList.length || '-';
+            document.getElementById('homeBudget').textContent = '¥' + (shoppingList.length > 0 ? calculateTotalBudget() : totalBudget);
+
+            // 更新菜谱预览
+            updateMealPreview();
+        }
+
+        // ====== 菜谱预览 ======
+        function updateMealPreview() {
+            const container = document.getElementById('homeMealPreview');
+            const list = document.getElementById('homeMealList');
+            const days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+            const dayNames = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
+            
+            let hasMeals = false;
+            let html = '';
+            
+            days.forEach((day, i) => {
+                const meals = weeklyMeals[day];
+                if (meals.meat || meals.veg) {
+                    hasMeals = true;
+                    html += `
+                        <div class="card py-3">
+                            <p class="text-sm font-medium text-emerald-600 mb-1">${dayNames[i]}</p>
+                            <p class="text-sm text-gray-700">${meals.meat ? '🍖 ' + meals.meat : ''} ${meals.veg ? '🥬 ' + meals.veg : ''} ${meals.staple}</p>
+                        </div>
+                    `;
+                }
+            });
+            
+            if (hasMeals) {
+                container.classList.remove('hidden');
+                list.innerHTML = html;
+            } else {
+                container.classList.add('hidden');
+            }
+        }
+
+        // ====== 智能拆解食材 ======
+        function generateShoppingList() {
+            updateMealSelection();
+            
+            const allDishes = [];
+            Object.entries(weeklyMeals).forEach(([day, meals]) => {
+                if (meals.meat) allDishes.push({name: meals.meat, type: 'meat'});
+                if (meals.veg) allDishes.push({name: meals.veg, type: 'veg'});
+                if (meals.staple) allDishes.push({name: meals.staple, type: 'staple'});
+            });
+
+            if (allDishes.length === 0) {
+                showToast('请至少输入一道菜！');
+                return;
+            }
+
+            // 智能拆解
+            shoppingList = [];
+            const ingredientMap = new Map();
+
+            allDishes.forEach(dish => {
+                // 先查数据库
+                let ingredients = null;
+                for (const [key, recipe] of Object.entries(recipeDatabase)) {
+                    if (dish.name.includes(key) || key.includes(dish.name)) {
+                        ingredients = recipe.ingredients;
+                        break;
+                    }
+                }
+
+                if (ingredients) {
+                    // 使用数据库的食材
+                    ingredients.forEach(ing => {
+                        if (ingredientMap.has(ing.name)) {
+                            // 合并数量
+                            const existing = ingredientMap.get(ing.name);
+                            // 简单合并逻辑
+                        } else {
+                            ingredientMap.set(ing.name, {
+                                name: ing.name,
+                                qty: ing.qty,
+                                price: ing.price,
+                                category: getCategory(ing.name),
+                                checked: false
+                            });
+                        }
+                    });
+                } else {
+                    // 未知菜谱，使用默认估算
+                    const isMeat = dish.type === 'meat';
+                    ingredientMap.set(dish.name + '_估计', {
+                        name: dish.name + '相关食材',
+                        qty: isMeat ? '适量' : '适量',
+                        price: isMeat ? 30 : 10,
+                        category: isMeat ? '肉类' : '蔬菜',
+                        checked: false,
+                        note: '智能估算，请根据实际情况调整'
+                    });
+                }
+            });
+
+            shoppingList = Array.from(ingredientMap.values());
+            checkedItems.clear();
+
+            // 渲染清单
+            renderShoppingList();
+            updateProgress();
+            updateHomeStats();
+            
+            showToast('已拆解 ' + shoppingList.length + ' 件食材！');
+
+            // 跳转到清单页
+            setTimeout(() => showPage('list'), 500);
+        }
+
+        // ====== 获取食材分类 ======
+        function getCategory(name) {
+            const meatKeywords = ['肉', '鸡', '牛', '猪', '鱼', '虾', '蛋'];
+            const vegKeywords = ['菜', '蔬', '菇', '豆', '椒', '薯', '萝', '卜', '西蓝', '花', '油'];
+            const stapleKeywords = ['米', '面', '粉', '饭', '粥', '馒', '包', '饺'];
+            
+            if (meatKeywords.some(k => name.includes(k))) return '肉类';
+            if (vegKeywords.some(k => name.includes(k))) return '蔬菜';
+            if (stapleKeywords.some(k => name.includes(k))) return '主食';
+            return '调料';
+        }
+
+        // ====== 渲染采购清单 ======
+        function renderShoppingList() {
+            const container = document.getElementById('shoppingList');
+            
+            // 按分类分组
+            const categories = {
+                '肉类': { icon: 'fa-drumstick-bite', color: 'red', items: [] },
+                '蔬菜': { icon: 'fa-leaf', color: 'green', items: [] },
+                '主食': { icon: 'fa-bread-slice', color: 'amber', items: [] },
+                '调料': { icon: 'fa-pepper-hot', color: 'orange', items: [] }
+            };
+
+            shoppingList.forEach(item => {
+                const cat = item.category || '调料';
+                if (categories[cat]) {
+                    categories[cat].items.push(item);
+                } else {
+                    categories['调料'].items.push(item);
+                }
+            });
+
+            let html = '';
+            let total = 0;
+
+            Object.entries(categories).forEach(([catName, cat]) => {
+                if (cat.items.length === 0) return;
+
+                const catTotal = cat.items.reduce((sum, item) => sum + item.price, 0);
+                total += catTotal;
+
+                html += `
+                    <div class="card">
+                        <div class="flex items-center mb-3">
+                            <i class="fas fa-${cat.icon} text-${cat.color}-500 mr-2"></i>
+                            <span class="font-semibold">${catName}</span>
+                            <span class="ml-auto text-sm text-gray-500">约¥${catTotal}</span>
+                        </div>
+                        ${cat.items.map((item, i) => `
+                            <label class="flex items-center py-2 border-b border-gray-100 last:border-0">
+                                <input type="checkbox" 
+                                    ${checkedItems.has(item.name) ? 'checked' : ''} 
+                                    onchange="toggleItem('${item.name}', this.checked)"
+                                    class="w-5 h-5 mr-3 accent-emerald-500">
+                                <div class="flex-1">
+                                    <p class="text-sm font-medium">${item.name}</p>
+                                    <p class="text-xs text-gray-400">${item.qty}${item.note ? ' · ' + item.note : ''}</p>
+                                </div>
+                                <span class="text-sm font-medium">¥${item.price}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                `;
+            });
+
+            document.getElementById('totalItems').textContent = shoppingList.length + '件食材';
+            document.getElementById('totalBudget').textContent = '¥' + total;
+            container.innerHTML = html || '<div class="card text-center text-gray-500 py-8">暂无采购清单<br>请先自定义菜谱</div>';
+        }
+
+        // ====== 切换采购项 ======
+        function toggleItem(name, checked) {
+            if (checked) {
+                checkedItems.add(name);
+            } else {
+                checkedItems.delete(name);
+            }
+            updateProgress();
+        }
+
+        // ====== 更新进度 ======
+        function updateProgress() {
+            const total = shoppingList.length;
+            const checked = checkedItems.size;
+            const percent = total > 0 ? Math.round((checked / total) * 100) : 0;
+            
+            document.getElementById('progressText').textContent = checked + '/' + total;
+            document.getElementById('progressFill').style.width = percent + '%';
+        }
+
+        // ====== 计算总预算 ======
+        function calculateTotalBudget() {
+            return shoppingList.reduce((sum, item) => sum + item.price, 0);
+        }
+
+        // ====== 重置清单 ======
+        function resetList() {
+            checkedItems.clear();
+            document.querySelectorAll('#shoppingList input[type="checkbox"]').forEach(cb => cb.checked = false);
+            updateProgress();
+            showToast('清单已重置');
+        }
+
+        // ====== 完成采购 ======
+        function completeShopping() {
+            const checked = checkedItems.size;
+            const total = shoppingList.length;
+            
+            if (checked < total && total > 0) {
+                if (!confirm(`已完成 ${checked}/${total} 件，还有 ${total - checked} 件未采购，确定完成吗？`)) {
+                    return;
+                }
+            }
+            
+            showToast('采购完成！');
+            setTimeout(() => showPage('home'), 1000);
+        }
+
+        // ====== 导出清单 ======
+        function exportList() {
+            window.print();
+            showToast('使用Ctrl+P打印');
+        }
+
+        // ====== 显示菜谱计划 ======
+        function showMealPlan() {
+            const modal = document.getElementById('mealPlanModal');
+            const content = document.getElementById('mealPlanContent');
+            const days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+            const dayNames = ['周一', '周二', '周三', '周四', '周五（快捷）', '周六（可复杂）', '周日（可复杂）'];
+
+            let html = '';
+            days.forEach((day, i) => {
+                const meals = weeklyMeals[day];
+                if (meals.meat || meals.veg) {
+                    html += `
+                        <div class="py-3 border-b border-gray-100 last:border-0">
+                            <p class="font-medium text-emerald-600 mb-1">${dayNames[i]}</p>
+                            <div class="space-y-1">
+                                ${meals.meat ? `<p class="text-sm">🍖 ${meals.meat}</p>` : ''}
+                                ${meals.veg ? `<p class="text-sm">🥬 ${meals.veg}</p>` : ''}
+                                <p class="text-sm text-gray-500">🍚 ${meals.staple}</p>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+
+            if (!html) {
+                html = '<p class="text-center text-gray-500 py-8">暂无菜谱<br>请先自定义菜谱</p>';
+            }
+
+            content.innerHTML = html;
+            modal.classList.remove('hidden');
+        }
+
+        // ====== 关闭菜谱弹窗 ======
+        function closeMealPlan() {
+            document.getElementById('mealPlanModal').classList.add('hidden');
+        }
+
+        // 初始化
+        updateHomeStats();
+    </script>
 </body>
 </html>
